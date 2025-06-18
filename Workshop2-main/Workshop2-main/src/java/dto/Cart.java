@@ -42,6 +42,15 @@ public class Cart {
     public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "cartID=" + cartID +
+                ", userID='" + userID + '\'' +
+                ", createdDate=" + createdDate +
+                '}';
+    }
     
     
 }

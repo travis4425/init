@@ -62,5 +62,14 @@ public class Invoice {
         this.createdDate = createdDate;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "invoiceID=" + invoiceID +
+                ", userID='" + userID + '\'' +
+                ", status='" + status + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", createdDate=" + createdDate +
+                '}';
+    }
 }

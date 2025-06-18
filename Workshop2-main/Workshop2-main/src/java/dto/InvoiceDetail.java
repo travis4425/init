@@ -48,4 +48,13 @@ public class InvoiceDetail {
     public void setPrice(float price) {
         this.price = price;
     }
+     @Override
+    public String toString() {
+        return "InvoiceDetail{" +
+                "invoiceID=" + invoiceID +
+                ", productID=" + productID +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
+    }
 }

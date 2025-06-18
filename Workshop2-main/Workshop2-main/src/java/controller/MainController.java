@@ -36,6 +36,19 @@ public class MainController extends HttpServlet {
     private static final String GET_USER = "GetUser";
     private static final String GET_USER_CONTROLLER = "GetUserController";
     
+    // Cart & Invoice actions
+    private static final String ADD_TO_CART = "AddToCart";
+    private static final String VIEW_CART = "ViewCart";
+    private static final String UPDATE_CART = "UpdateCart";
+    private static final String REMOVE_FROM_CART = "RemoveFromCart";
+    private static final String CLEAR_CART = "ClearCart";
+    private static final String CART_CONTROLLER = "CartController";
+    
+    private static final String CHECKOUT = "Checkout";
+    private static final String VIEW_INVOICES = "ViewInvoices";
+    private static final String VIEW_INVOICE_DETAIL = "ViewInvoiceDetail";
+    private static final String INVOICE_CONTROLLER = "InvoiceController";
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -56,6 +69,17 @@ public class MainController extends HttpServlet {
                 url = UPDATE_USER_CONTROLLER;
             } else if (DELETE_USER.equals(action)) {
                 url = DELETE_USER_CONTROLLER;
+            }
+            // Cart actions
+            else if (ADD_TO_CART.equals(action) || VIEW_CART.equals(action) || 
+                     UPDATE_CART.equals(action) || REMOVE_FROM_CART.equals(action) || 
+                     CLEAR_CART.equals(action)) {
+                url = CART_CONTROLLER;
+            }
+            // Invoice actions
+            else if (CHECKOUT.equals(action) || VIEW_INVOICES.equals(action) || 
+                     VIEW_INVOICE_DETAIL.equals(action)) {
+                url = INVOICE_CONTROLLER;
             }
             else {
                 url = "login.jsp";
