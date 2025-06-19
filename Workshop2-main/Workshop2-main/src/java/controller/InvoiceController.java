@@ -1,9 +1,13 @@
 package controller;
 
 import dao.CartDAO;
+import dao.CartDetailDAO;
 import dao.InvoiceDAO;
-import dto.Cart;
+import dao.InvoiceDetailDAO;
+import dao.ProductDAO;
 import dto.Invoice;
+import dto.InvoiceDetail;
+import dto.Product;
 import dto.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -12,149 +16,268 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.sql.Date;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Invoice Controller - Handle invoice operations
- * @author Admin
+ * InvoiceController - Xử lý các thao tác với hóa đơn
  */
-@WebServlet(name="InvoiceController", urlPatterns={"/InvoiceController"})
+@WebServlet(name = "InvoiceController", urlPatterns = {"/InvoiceController"})
 public class InvoiceController extends HttpServlet {
     
-    private static final String CHECKOUT = "Checkout";
-    private static final String VIEW_INVOICES = "ViewInvoices";
-    private static final String VIEW_INVOICE_DETAIL = "ViewInvoiceDetail";
+    private InvoiceDAO invoiceDAO = new InvoiceDAO();
+    private InvoiceDetailDAO invoiceDetailDAO = new InvoiceDetailDAO();
+    private CartDAO cartDAO = new CartDAO();
+    private CartDetailDAO cartDetailDAO = new CartDetailDAO();
+    private ProductDAO productDAO = new ProductDAO();
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String url = "login.jsp";
+        
+        HttpSession session = request.getSession();
+        User loginUser = (User) session.getAttribute("LOGIN_USER");
+        
+        // Kiểm tra đăng nhập
+        if (loginUser == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
+        String action = request.getParameter("action");
+        if (action == null) action = "list";
+        
         try {
-            HttpSession session = request.getSession();
-            User loginUser = (User) session.getAttribute("LOGIN_USER");
+            switch (action) {
+                case "checkout":
+                    checkout(request, response, loginUser);
+                    break;
+                case "view":
+                    viewInvoice(request, response, loginUser);
+                    break;
+                case "list":
+                    listInvoices(request, response, loginUser);
+                    break;
+                case "cancel":
+                    cancelInvoice(request, response, loginUser);
+                    break;
+                default:
+                    listInvoices(request, response, loginUser);
+                    break;
+            }
+        } catch (Exception e) {
+            log("Error at InvoiceController: " + e.toString());
+            request.setAttribute("MSG", "Đã xảy ra lỗi: " + e.getMessage());
+            listInvoices(request, response, loginUser);
+        }
+    }
+    
+    // Thanh toán từ giỏ hàng
+    private void checkout(HttpServletRequest request, HttpServletResponse response, User user)
+            throws Exception {
+        
+        int cartID = cartDAO.getCurrentCartID(user.getUserID());
+        
+        // Kiểm tra giỏ hàng có sản phẩm không
+        Map<Product, Integer> cartItems = cartDetailDAO.getCartWithProducts(cartID);
+        if (cartItems.isEmpty()) {
+            request.setAttribute("MSG", "Giỏ hàng trống, không thể thanh toán.");
+            response.sendRedirect("CartController?action=view");
+            return;
+        }
+        
+        // Kiểm tra số lượng sản phẩm trong kho
+        for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+            Product product = entry.getKey();
+            int requestedQuantity = entry.getValue();
             
-            if (loginUser == null) {
-                request.setAttribute("MSG", "Please login to access this feature.");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+            if (!productDAO.checkProductAvailability(product.getProductID(), requestedQuantity)) {
+                request.setAttribute("MSG", "Sản phẩm " + product.getName() + " không đủ số lượng trong kho.");
+                response.sendRedirect("CartController?action=view");
+                return;
+            }
+        }
+        
+        // Tính tổng tiền
+        float totalAmount = cartDetailDAO.getTotalAmount(cartID);
+        
+        // Tạo hóa đơn
+        int invoiceID = invoiceDAO.createInvoice(user.getUserID(), totalAmount);
+        
+        if (invoiceID > 0) {
+            // Tạo chi tiết hóa đơn từ giỏ hàng
+            boolean detailsCreated = invoiceDetailDAO.createInvoiceDetailsFromCart(invoiceID, cartID);
+            
+            if (detailsCreated) {
+                // Cập nhật số lượng sản phẩm trong kho
+                for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+                    Product product = entry.getKey();
+                    int soldQuantity = entry.getValue();
+                    productDAO.updateProductQuantity(product.getProductID(), soldQuantity);
+                }
+                
+                // Xóa giỏ hàng sau khi thanh toán thành công
+                cartDetailDAO.clearCart(cartID);
+                
+                // Chuyển đến trang thank you
+                request.setAttribute("INVOICE_ID", invoiceID);
+                request.setAttribute("TOTAL_AMOUNT", totalAmount);
+                request.getRequestDispatcher("thankyou.jsp").forward(request, response);
+            } else {
+                request.setAttribute("MSG", "Không thể tạo chi tiết hóa đơn.");
+                response.sendRedirect("CartController?action=view");
+            }
+        } else {
+            request.setAttribute("MSG", "Không thể tạo hóa đơn.");
+            response.sendRedirect("CartController?action=view");
+        }
+    }
+    
+    // Xem chi tiết hóa đơn
+    private void viewInvoice(HttpServletRequest request, HttpServletResponse response, User user)
+            throws Exception {
+        
+        String invoiceIDStr = request.getParameter("invoiceID");
+        if (invoiceIDStr == null) {
+            request.setAttribute("MSG", "Không tìm thấy hóa đơn.");
+            listInvoices(request, response, user);
+            return;
+        }
+        
+        try {
+            int invoiceID = Integer.parseInt(invoiceIDStr);
+            
+            // Lấy thông tin hóa đơn
+            Invoice invoice = invoiceDAO.getInvoiceByID(invoiceID);
+            
+            if (invoice == null) {
+                request.setAttribute("MSG", "Hóa đơn không tồn tại.");
+                listInvoices(request, response, user);
                 return;
             }
             
-            String action = request.getParameter("action");
-            InvoiceDAO invoiceDAO = new InvoiceDAO();
-            CartDAO cartDAO = new CartDAO();
-            
-            if (CHECKOUT.equals(action)) {
-                url = handleCheckout(request, invoiceDAO, cartDAO, loginUser.getUserID());
-            } else if (VIEW_INVOICES.equals(action)) {
-                url = handleViewInvoices(request, invoiceDAO, loginUser.getUserID());
-            } else if (VIEW_INVOICE_DETAIL.equals(action)) {
-                url = handleViewInvoiceDetail(request, invoiceDAO);
-            } else {
-                url = handleViewInvoices(request, invoiceDAO, loginUser.getUserID());
+            // Kiểm tra quyền xem hóa đơn (chỉ user sở hữu hoặc admin)
+            if (!invoice.getUserID().equals(user.getUserID()) && !"admin".equals(user.getRole())) {
+                request.setAttribute("MSG", "Bạn không có quyền xem hóa đơn này.");
+                listInvoices(request, response, user);
+                return;
             }
             
-        } catch (Exception e) {
-            log("Error at InvoiceController: " + e.toString());
-            request.setAttribute("MSG", "An error occurred while processing your request.");
-            url = "error.jsp";
-        } finally {
-            request.getRequestDispatcher(url).forward(request, response);
+            // Lấy chi tiết hóa đơn
+            Map<Product, InvoiceDetail> invoiceDetails = invoiceDetailDAO.getInvoiceDetailsWithProducts(invoiceID);
+            
+            request.setAttribute("INVOICE", invoice);
+            request.setAttribute("INVOICE_DETAILS", invoiceDetails);
+            request.getRequestDispatcher("invoiceDetail.jsp").forward(request, response);
+            
+        } catch (NumberFormatException e) {
+            request.setAttribute("MSG", "ID hóa đơn không hợp lệ.");
+            listInvoices(request, response, user);
         }
     }
     
-    private String handleCheckout(HttpServletRequest request, InvoiceDAO invoiceDAO, CartDAO cartDAO, String userID) {
-        try {
-            // Get cart items
-            List<Cart> cartList = cartDAO.getCartByID(userID);
-            
-            if (cartList.isEmpty()) {
-                request.setAttribute("MSG", "Your cart is empty. Please add some products first.");
-                return "CartController?action=ViewCart";
-            }
-            
-            // Calculate total amount
-            double totalAmount = cartDAO.getCartTotal(userID);
-            
-            // Generate invoice ID
-            String invoiceID = invoiceDAO.generateInvoiceID();
-            
-            // Create invoice
-            Date currentDate = new Date(System.currentTimeMillis());
-            InvoiceDTO invoice = new InvoiceDTO(invoiceID, userID, currentDate, totalAmount, "COMPLETED");
-            
-            // Save invoice and details
-            boolean success = invoiceDAO.createInvoice(invoice, cartList);
-            
-            if (success) {
-                // Clear cart after successful checkout
-                cartDAO.clearCart(userID);
-                
-                // Set attributes for thank you page
-                request.setAttribute("invoice", invoice);
-                request.setAttribute("invoiceDetails", cartList);
-                request.setAttribute("MSG", "Order placed successfully! Invoice ID: " + invoiceID);
-                
-                return "thankyou.jsp";
-            } else {
-                request.setAttribute("MSG", "Failed to process your order. Please try again.");
-                return "CartController?action=ViewCart";
-            }
-            
-        } catch (Exception e) {
-            log("Error during checkout: " + e.toString());
-            request.setAttribute("MSG", "Error processing your order. Please try again.");
-            return "CartController?action=ViewCart";
+    // Danh sách hóa đơn
+    private void listInvoices(HttpServletRequest request, HttpServletResponse response, User user)
+            throws Exception {
+        
+        List<Invoice> invoices;
+        
+        if ("admin".equals(user.getRole())) {
+            // Admin xem tất cả hóa đơn
+            invoices = invoiceDAO.getAllInvoices();
+        } else {
+            // User chỉ xem hóa đơn của mình
+            invoices = invoiceDAO.getInvoicesByUser(user.getUserID());
         }
+        
+        request.setAttribute("INVOICES", invoices);
+        request.getRequestDispatcher("invoiceList.jsp").forward(request, response);
     }
     
-    private String handleViewInvoices(HttpServletRequest request, InvoiceDAO invoiceDAO, String userID) {
-        try {
-            List<InvoiceDTO> invoiceList = invoiceDAO.getInvoicesByUser(userID);
-            request.setAttribute("invoiceList", invoiceList);
-            return "invoiceList.jsp";
-            
-        } catch (Exception e) {
-            log("Error viewing invoices: " + e.toString());
-            request.setAttribute("MSG", "Error loading invoices.");
-            return "error.jsp";
+    // Hủy hóa đơn (chỉ với trạng thái Pending)
+    private void cancelInvoice(HttpServletRequest request, HttpServletResponse response, User user)
+            throws Exception {
+        
+        String invoiceIDStr = request.getParameter("invoiceID");
+        if (invoiceIDStr == null) {
+            request.setAttribute("MSG", "Không tìm thấy hóa đơn cần hủy.");
+            listInvoices(request, response, user);
+            return;
         }
-    }
-    
-    private String handleViewInvoiceDetail(HttpServletRequest request, InvoiceDAO invoiceDAO) {
+        
         try {
-            String invoiceID = request.getParameter("invoiceID");
+            int invoiceID = Integer.parseInt(invoiceIDStr);
             
-            if (invoiceID == null) {
-                request.setAttribute("MSG", "Invoice ID is required.");
-                return "error.jsp";
-            }
-            
-            InvoiceDTO invoice = invoiceDAO.getInvoiceByID(invoiceID);
+            // Lấy thông tin hóa đơn
+            Invoice invoice = invoiceDAO.getInvoiceByID(invoiceID);
             
             if (invoice == null) {
-                request.setAttribute("MSG", "Invoice not found.");
-                return "error.jsp";
+                request.setAttribute("MSG", "Hóa đơn không tồn tại.");
+                listInvoices(request, response, user);
+                return;
             }
             
-            request.setAttribute("invoice", invoice);
-            return "invoiceDetail.jsp";
+            // Kiểm tra quyền hủy hóa đơn
+            if (!invoice.getUserID().equals(user.getUserID()) && !"admin".equals(user.getRole())) {
+                request.setAttribute("MSG", "Bạn không có quyền hủy hóa đơn này.");
+                listInvoices(request, response, user);
+                return;
+            }
             
-        } catch (Exception e) {
-            log("Error viewing invoice detail: " + e.toString());
-            request.setAttribute("MSG", "Error loading invoice details.");
-            return "error.jsp";
+            // Chỉ hủy được hóa đơn có trạng thái Pending
+            if (!"Pending".equals(invoice.getStatus())) {
+                request.setAttribute("MSG", "Chỉ có thể hủy hóa đơn đang chờ xử lý.");
+                listInvoices(request, response, user);
+                return;
+            }
+            
+            // Cập nhật trạng thái hóa đơn
+            boolean success = invoiceDAO.updateInvoiceStatus(invoiceID, "Cancelled");
+            
+            if (success) {
+                // Hoàn trả số lượng sản phẩm về kho
+                Map<Product, InvoiceDetail> invoiceDetails = invoiceDetailDAO.getInvoiceDetailsWithProducts(invoiceID);
+                for (Map.Entry<Product, InvoiceDetail> entry : invoiceDetails.entrySet()) {
+                    Product product = entry.getKey();
+                    InvoiceDetail detail = entry.getValue();
+                    
+                    // Cập nhật lại số lượng sản phẩm (cộng lại số lượng đã bán)
+                    String updateSQL = "UPDATE tblProducts SET quantity = quantity + ? WHERE productID = ?";
+                    try (java.sql.Connection conn = utils.DBUtils.getConnection();
+                         java.sql.PreparedStatement ps = conn.prepareStatement(updateSQL)) {
+                        ps.setInt(1, detail.getQuantity());
+                        ps.setInt(2, product.getProductID());
+                        ps.executeUpdate();
+                    }
+                }
+                
+                request.setAttribute("MSG", "Đã hủy hóa đơn thành công.");
+            } else {
+                request.setAttribute("MSG", "Không thể hủy hóa đơn.");
+            }
+            
+            listInvoices(request, response, user);
+            
+        } catch (NumberFormatException e) {
+            request.setAttribute("MSG", "ID hóa đơn không hợp lệ.");
+            listInvoices(request, response, user);
         }
     }
-
+    
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-}
+    
+    @Override
+    public String getServletInfo() {
+        return "Invoice Controller";
+    }
+}   
