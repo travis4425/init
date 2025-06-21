@@ -1,56 +1,75 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package dto;
 
-import java.time.LocalDate;
-
-
+/**
+ * CartItem DTO - Represents a cart item for display in JSP
+ */
 public class Cart {
-    private int cartID;
-    private String userID;
-    private LocalDate createdDate;
-
-    public Cart(int cartID, String userID, LocalDate createdDate) {
-        this.cartID = cartID;
-        this.userID = userID;
-        this.createdDate = createdDate;
+    private String productID;
+    private String productName;
+    private float price;
+    private int quantity;
+    private float total;
+    
+    public Cart() {
     }
-
-    public int getCartID() {
-        return cartID;
+    
+    public Cart(String productID, String productName, float price, int quantity, float total) {
+        this.productID = productID;
+        this.productName = productName;
+        this.price = price;
+        this.quantity = quantity;
+        this.total = total;
     }
-
-    public void setCartID(int cartID) {
-        this.cartID = cartID;
+    
+    // Getters and Setters
+    public String getProductID() {
+        return productID;
     }
-
-    public String getUserID() {
-        return userID;
+    
+    public void setProductID(String productID) {
+        this.productID = productID;
     }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
+    
+    public String getProductName() {
+        return productName;
     }
-
-    public LocalDate getCreatedDate() {
-        return createdDate;
+    
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
-
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
+    
+    public float getPrice() {
+        return price;
     }
-
+    
+    public void setPrice(float price) {
+        this.price = price;
+    }
+    
+    public int getQuantity() {
+        return quantity;
+    }
+    
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    
+    public float getTotal() {
+        return total;
+    }
+    
+    public void setTotal(float total) {
+        this.total = total;
+    }
+    
     @Override
     public String toString() {
-        return "Cart{" +
-                "cartID=" + cartID +
-                ", userID='" + userID + '\'' +
-                ", createdDate=" + createdDate +
+        return "CartItem{" +
+                "productID='" + productID + '\'' +
+                ", productName='" + productName + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", total=" + total +
                 '}';
     }
-    
-    
 }

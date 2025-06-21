@@ -1,0 +1,228 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f8ff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #3f51b5;
+    color: white;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.sidebar a:hover {
+    background-color: #303f9f;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header a {
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px 12px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.header a:hover {
+    background-color: #45a049;
+}
+
+.function-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.function-header .msg {
+    margin-top: 8px;
+}
+
+table { 
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #3f51b5;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.actions {
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.function-buttons {
+    display: flex;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    gap: 10px;
+    position: relative;
+}
+
+button {
+    padding: 5px 12px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 70px;
+    text-align: center;
+}
+
+.button-green {
+    background-color: #28a745; /* Màu xanh lá */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.button-red {
+    background-color: #dc3545; /* Màu đỏ */
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.button-green:hover {
+    background-color: #218838;
+}
+
+.button-red:hover {
+    background-color: #c82333;
+}
+
+.butDelete {
+    background-color: #f44336; /* Delete button */
+}
+
+.delete-placeholder {
+    width: 70px;  /*Cùng chiều rộng với nút Delete*/ 
+    height: 28px;  /*Cùng chiều cao với nút*/ 
+}
+
+form {
+    margin: 0;
+}
+
+#createForm {
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0 0 10px #ccc;
+    margin-bottom: 20px;
+    width: 460px;
+}
+
+#createForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Khoảng cách giữa các dòng */
+    margin-top: 15px;
+}
+
+#createForm label {
+    display: inline-block;
+    width: 100px;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#createForm .form-group {
+    display: flex;
+    align-items: center;
+}
+
+#createForm h3 {
+    margin-top: 0;
+}
+input, select {
+    padding: 3px;
+}
+
+.msg {
+    padding: 10px;
+    border: 1px solid #5cb85c;
+    border-radius: 4px;
+    width: fit-content;
+}
+.msg.success {
+    border: 2px solid #5cb85c;
+}
+.msg.error {
+    border: 2px solid #ebccd1;
+}
+#msg {
+    transition: opacity 0.5s ease-out;
+}
+.sidebar a.active {
+    background-color: #283593;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+input, select {
+    padding: 3px;
+}

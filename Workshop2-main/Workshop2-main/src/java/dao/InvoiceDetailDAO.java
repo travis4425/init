@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package dao;
 
 import dto.InvoiceDetail;
@@ -54,11 +49,14 @@ public class InvoiceDetailDAO {
         return list;
     }
     
-    // Lấy chi tiết hóa đơn kèm thông tin sản phẩm
+    // Lấy chi tiết hóa đơn kèm thông tin sản phẩm - ĐÃ SỬA LỖI QUERY
     public Map<Product, InvoiceDetail> getInvoiceDetailsWithProducts(int invoiceID) 
             throws SQLException, ClassNotFoundException {
         Map<Product, InvoiceDetail> detailMap = new HashMap<>();
-        String sql = "SELECT id.*, p.* FROM tblInvoiceDetails id " +
+        String sql = "SELECT id.invoiceID, id.productID, id.quantity as detailQuantity, id.price as detailPrice, " +
+                    "p.productID, p.categoryID, p.quantity as productQuantity, p.price as productPrice, " +
+                    "p.name, p.seller, p.status " +
+                    "FROM tblInvoiceDetails id " +
                     "JOIN tblProducts p ON id.productID = p.productID " +
                     "WHERE id.invoiceID = ?";
         
@@ -70,8 +68,8 @@ public class InvoiceDetailDAO {
                 Product product = new Product(
                     rs.getInt("productID"),
                     rs.getInt("categoryID"),
-                    rs.getInt("quantity"), // Số lượng trong kho
-                    rs.getFloat("price"),
+                    rs.getInt("productQuantity"), // Số lượng trong kho
+                    rs.getFloat("productPrice"),  // Giá hiện tại
                     rs.getString("name"),
                     rs.getString("seller"),
                     rs.getString("status")
@@ -80,8 +78,8 @@ public class InvoiceDetailDAO {
                 InvoiceDetail detail = new InvoiceDetail(
                     rs.getInt("invoiceID"),
                     rs.getInt("productID"),
-                    rs.getInt("quantity"), // Số lượng đã mua (từ bảng invoice detail)
-                    rs.getFloat("price")   // Giá tại thời điểm mua
+                    rs.getInt("detailQuantity"), // Số lượng đã mua
+                    rs.getFloat("detailPrice")   // Giá tại thời điểm mua
                 );
                 
                 detailMap.put(product, detail);

@@ -1,10 +1,11 @@
-package controller;
+package controller.cart;
 
 import dao.CartDAO;
 import dao.CartDetailDAO;
 import dao.ProductDAO;
 import dto.Product;
 import dto.User;
+import dto.Cart;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,12 +13,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
-/**
- * CartController - Xử lý các thao tác với giỏ hàng
- * @author Admin
- */
 @WebServlet(name="CartController", urlPatterns={"/CartController"})
 public class CartController extends HttpServlet {
     
@@ -38,35 +37,39 @@ public class CartController extends HttpServlet {
         }
         
         String action = request.getParameter("action");
-        if (action == null) action = "view";
+        if (action == null) action = "ViewCart";
         
         try {
             switch (action) {
-                case "add":
+                case "AddToCart":
                     addToCart(request, response, loginUser);
                     break;
-                case "update":
+                case "UpdateCart":
                     updateCart(request, response, loginUser);
                     break;
-                case "remove":
+                case "RemoveFromCart":
                     removeFromCart(request, response, loginUser);
                     break;
-                case "clear":
+                case "ClearCart":
                     clearCart(request, response, loginUser);
                     break;
-                case "view":
+                case "ViewCart":
                 default:
-                    viewCart(request, response, loginUser);
+                    cartList(request, response, loginUser);
                     break;
             }
         } catch (Exception e) {
             log("Error at CartController: " + e.toString());
+            e.printStackTrace();
             request.setAttribute("MSG", "Đã xảy ra lỗi khi xử lý giỏ hàng: " + e.getMessage());
-            viewCart(request, response, loginUser);
+            try {
+                cartList(request, response, loginUser);
+            } catch (Exception ex) {
+                response.sendRedirect("MainController");
+            }
         }
     }
     
-    // Thêm sản phẩm vào giỏ hàng
     private void addToCart(HttpServletRequest request, HttpServletResponse response, User user) 
             throws Exception {
         
@@ -75,7 +78,7 @@ public class CartController extends HttpServlet {
         
         if (productIDStr == null || quantityStr == null) {
             request.setAttribute("MSG", "Thông tin sản phẩm không hợp lệ.");
-            viewCart(request, response, user);
+            cartList(request, response, user);
             return;
         }
         
@@ -85,29 +88,30 @@ public class CartController extends HttpServlet {
             
             if (quantity <= 0) {
                 request.setAttribute("MSG", "Số lượng phải lớn hơn 0.");
-                viewCart(request, response, user);
+                cartList(request, response, user);
                 return;
             }
             
-            // Kiểm tra sản phẩm có tồn tại không
+            // FIX: Kiểm tra stock trước khi thêm vào cart
             Product product = productDAO.getProduct(String.valueOf(productID));
             if (product == null) {
                 request.setAttribute("MSG", "Sản phẩm không tồn tại.");
-                viewCart(request, response, user);
+                cartList(request, response, user);
                 return;
             }
             
-            // Kiểm tra số lượng trong kho
-            if (product.getQuantity() < quantity) {
-                request.setAttribute("MSG", "Không đủ hàng trong kho. Còn lại: " + product.getQuantity());
-                viewCart(request, response, user);
-                return;
-            }
-            
-            // Lấy hoặc tạo cart cho user
+            // Kiểm tra số lượng hiện tại trong cart
             int cartID = cartDAO.getCurrentCartID(user.getUserID());
+            int currentQuantityInCart = cartDetailDAO.getProductQuantityInCart(cartID, productID);
+            int totalQuantityNeeded = currentQuantityInCart + quantity;
             
-            // Thêm vào giỏ hàng
+            if (product.getQuantity() < totalQuantityNeeded) {
+                request.setAttribute("MSG", "Không đủ hàng trong kho. Còn lại: " + 
+                    product.getQuantity() + ", bạn đã có " + currentQuantityInCart + " trong giỏ");
+                cartList(request, response, user);
+                return;
+            }
+            
             boolean success = cartDetailDAO.addToCart(cartID, productID, quantity);
             
             if (success) {
@@ -116,15 +120,14 @@ public class CartController extends HttpServlet {
                 request.setAttribute("MSG", "Không thể thêm sản phẩm vào giỏ hàng.");
             }
             
-            viewCart(request, response, user);
+            cartList(request, response, user);
             
         } catch (NumberFormatException e) {
             request.setAttribute("MSG", "Dữ liệu không hợp lệ.");
-            viewCart(request, response, user);
+            cartList(request, response, user);
         }
     }
     
-    // Cập nhật số lượng sản phẩm trong giỏ
     private void updateCart(HttpServletRequest request, HttpServletResponse response, User user) 
             throws Exception {
         
@@ -133,7 +136,7 @@ public class CartController extends HttpServlet {
         
         if (productIDStr == null || quantityStr == null) {
             request.setAttribute("MSG", "Thông tin cập nhật không hợp lệ.");
-            viewCart(request, response, user);
+            cartList(request, response, user);
             return;
         }
         
@@ -143,24 +146,21 @@ public class CartController extends HttpServlet {
             
             if (quantity < 0) {
                 request.setAttribute("MSG", "Số lượng không thể âm.");
-                viewCart(request, response, user);
+                cartList(request, response, user);
                 return;
             }
             
-            // Lấy cart hiện tại
             int cartID = cartDAO.getCurrentCartID(user.getUserID());
             
             boolean success;
             if (quantity == 0) {
-                // Xóa sản phẩm nếu quantity = 0
                 success = cartDetailDAO.removeFromCart(cartID, productID);
                 request.setAttribute("MSG", success ? "Đã xóa sản phẩm khỏi giỏ hàng." : "Không thể xóa sản phẩm.");
             } else {
-                // Kiểm tra số lượng trong kho
                 Product product = productDAO.getProduct(String.valueOf(productID));
                 if (product != null && product.getQuantity() < quantity) {
                     request.setAttribute("MSG", "Không đủ hàng trong kho. Còn lại: " + product.getQuantity());
-                    viewCart(request, response, user);
+                    cartList(request, response, user);
                     return;
                 }
                 
@@ -168,15 +168,14 @@ public class CartController extends HttpServlet {
                 request.setAttribute("MSG", success ? "Đã cập nhật giỏ hàng." : "Không thể cập nhật giỏ hàng.");
             }
             
-            viewCart(request, response, user);
+            cartList(request, response, user);
             
         } catch (NumberFormatException e) {
             request.setAttribute("MSG", "Dữ liệu không hợp lệ.");
-            viewCart(request, response, user);
+            cartList(request, response, user);
         }
     }
     
-    // Xóa sản phẩm khỏi giỏ hàng
     private void removeFromCart(HttpServletRequest request, HttpServletResponse response, User user) 
             throws Exception {
         
@@ -184,7 +183,7 @@ public class CartController extends HttpServlet {
         
         if (productIDStr == null) {
             request.setAttribute("MSG", "Không tìm thấy sản phẩm cần xóa.");
-            viewCart(request, response, user);
+            cartList(request, response, user);
             return;
         }
         
@@ -200,15 +199,14 @@ public class CartController extends HttpServlet {
                 request.setAttribute("MSG", "Không thể xóa sản phẩm.");
             }
             
-            viewCart(request, response, user);
+            cartList(request, response, user);
             
         } catch (NumberFormatException e) {
             request.setAttribute("MSG", "ID sản phẩm không hợp lệ.");
-            viewCart(request, response, user);
+            cartList(request, response, user);
         }
     }
     
-    // Xóa toàn bộ giỏ hàng
     private void clearCart(HttpServletRequest request, HttpServletResponse response, User user) 
             throws Exception {
         
@@ -221,35 +219,62 @@ public class CartController extends HttpServlet {
             request.setAttribute("MSG", "Không thể xóa giỏ hàng.");
         }
         
-        viewCart(request, response, user);
+        cartList(request, response, user);
     }
     
-    // Hiển thị giỏ hàng
-    private void viewCart(HttpServletRequest request, HttpServletResponse response, User user) 
-            throws Exception {
+    // FIX: Sửa lỗi productID type conversion
+    private void cartList(HttpServletRequest request, HttpServletResponse response, User user) 
+            throws ServletException, IOException {
         
-        int cartID = cartDAO.getCurrentCartID(user.getUserID());
-        
-        // Lấy danh sách sản phẩm trong giỏ
-        Map<Product, Integer> cartItems = cartDetailDAO.getCartWithProducts(cartID);
-        
-        // Tính tổng tiền
-        float totalAmount = cartDetailDAO.getTotalAmount(cartID);
-        
-        // Đếm số lượng items
-        int itemCount = cartDetailDAO.getCartItemCount(cartID);
-        
-        // Set attributes
-        request.setAttribute("CART_ITEMS", cartItems);
-        request.setAttribute("TOTAL_AMOUNT", totalAmount);
-        request.setAttribute("ITEM_COUNT", itemCount);
-        request.setAttribute("CART_ID", cartID);
-        
-        // Forward to JSP
-        request.getRequestDispatcher("viewCart.jsp").forward(request, response);
+        try {
+            int cartID = cartDAO.getCurrentCartID(user.getUserID());
+            
+            // Lấy danh sách sản phẩm và convert thành List<CartItem>
+            Map<Product, Integer> cartItems = cartDetailDAO.getCartWithProducts(cartID);
+            List<Cart> cartList = new ArrayList<>();
+            float totalAmount = 0;
+            
+            for (Map.Entry<Product, Integer> entry : cartItems.entrySet()) {
+                Product product = entry.getKey();
+                Integer quantity = entry.getValue();
+                float itemTotal = product.getPrice() * quantity;
+                totalAmount += itemTotal;
+                
+                // FIX: Convert productID to String properly
+                Cart cartItem = new Cart(
+                    String.valueOf(product.getProductID()), // FIX: Convert int to String
+                    product.getName(),
+                    product.getPrice(),
+                    quantity,
+                    itemTotal
+                );
+                cartList.add(cartItem);
+            }
+            
+            // Set attributes cho JSP
+            request.setAttribute("cartList", cartList);
+            request.setAttribute("totalAmount", totalAmount);
+            request.setAttribute("ITEM_COUNT", cartList.size());
+            request.setAttribute("CART_ID", cartID);
+            
+            // FIX: Forward đến đúng JSP file
+            request.getRequestDispatcher("cartList.jsp").forward(request, response);
+            
+        } catch (Exception e) {
+            log("Error in cartList: " + e.toString());
+            e.printStackTrace();
+            
+            // Set empty data
+            request.setAttribute("cartList", new ArrayList<Cart>());
+            request.setAttribute("totalAmount", 0.0f);
+            request.setAttribute("ITEM_COUNT", 0);
+            request.setAttribute("CART_ID", -1);
+            request.setAttribute("MSG", "Không thể tải giỏ hàng: " + e.getMessage());
+            
+            request.getRequestDispatcher("cartList.jsp").forward(request, response);
+        }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -264,7 +289,6 @@ public class CartController extends HttpServlet {
 
     @Override
     public String getServletInfo() {
-        return "Cart Controller";
+        return "Shopping Cart Controller";
     }
-    // </editor-fold>
 }

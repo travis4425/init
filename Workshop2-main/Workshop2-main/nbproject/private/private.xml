@@ -3,16 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/user/CreateUserController.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/user/LogoutController.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/user/SearchUserController.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/web/userUpdate.jsp</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/web/userList.jsp</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/MainController.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/user/LoginController.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/dao/UserDAO.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/user/UpdateUserController.java</file>
-            <file>file:/D:/Documents/NetBeansProjects/Workshop2/src/java/controller/user/GetUserController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/user/CreateUserController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dao/CartDAO.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/MainController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dto/Cart.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/cart/CartController.java</file>
         </group>
     </open-files>
 </project-private>

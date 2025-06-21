@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package dao;
 
 import dto.Invoice;
@@ -12,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,19 +17,23 @@ import utils.DBUtils;
 
 public class InvoiceDAO {
     
-    // Tạo hóa đơn mới
+    // Tạo hóa đơn mới - ĐÃ SỬA LỖI SQL
     public int createInvoice(String userID, float totalAmount) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO tblInvoices(userID, status, totalAmount, createdDate) VALUES (?, ?, ?, ?) SELECT SCOPE_IDENTITY()";
+        String sql = "INSERT INTO tblInvoices(userID, status, totalAmount, createdDate) VALUES (?, ?, ?, ?); SELECT SCOPE_IDENTITY()";
         try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, userID);
             ps.setString(2, "Pending"); // Trạng thái mặc định
             ps.setFloat(3, totalAmount);
             ps.setDate(4, java.sql.Date.valueOf(LocalDate.now()));
             
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
             }
         }
         return -1;
