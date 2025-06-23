@@ -9,25 +9,19 @@ import java.time.LocalDate;
 
 
 public class Invoice {
-    private int invoiceID;
-    private String userID, status;
-    private float totalAmount;
-    private LocalDate createdDate;
+    private String userID;
+    private double totalAmount;
+    private String status;
+    private String createdDate;
 
-    public Invoice(int invoiceID, String userID, String status, float totalAmount, LocalDate createdDate) {
-        this.invoiceID = invoiceID;
+    public Invoice() {
+    }
+
+    public Invoice(String userID, double totalAmount, String status, String createdDate) {
         this.userID = userID;
-        this.status = status;
         this.totalAmount = totalAmount;
+        this.status = status;
         this.createdDate = createdDate;
-    }
-
-    public int getInvoiceID() {
-        return invoiceID;
-    }
-
-    public void setInvoiceID(int invoiceID) {
-        this.invoiceID = invoiceID;
     }
 
     public String getUserID() {
@@ -38,6 +32,14 @@ public class Invoice {
         this.userID = userID;
     }
 
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -46,30 +48,13 @@ public class Invoice {
         this.status = status;
     }
 
-    public float getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(float totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public LocalDate getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDate createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
     
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "invoiceID=" + invoiceID +
-                ", userID='" + userID + '\'' +
-                ", status='" + status + '\'' +
-                ", totalAmount=" + totalAmount +
-                ", createdDate=" + createdDate +
-                '}';
-    }
+    
 }

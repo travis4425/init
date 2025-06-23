@@ -3,6 +3,62 @@
     <welcome-file-list>
         <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
+    <servlet>
+        <servlet-name>UpdateCartController</servlet-name>
+        <servlet-class>controller.cart.UpdateCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckoutController</servlet-name>
+        <servlet-class>controller.invoice.CheckoutController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewInvoiceController</servlet-name>
+        <servlet-class>controller.invoice.ViewInvoiceController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchCartController</servlet-name>
+        <servlet-class>controller.cart.SearchCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateCartController</servlet-name>
+        <servlet-class>controller.cart.CreateCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteCartController</servlet-name>
+        <servlet-class>controller.cart.DeleteCartController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateInvoiceController</servlet-name>
+        <servlet-class>controller.invoice.CreateInvoiceController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UpdateCartController</servlet-name>
+        <url-pattern>/UpdateCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckoutController</servlet-name>
+        <url-pattern>/CheckoutController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewInvoiceController</servlet-name>
+        <url-pattern>/ViewInvoiceController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchCartController</servlet-name>
+        <url-pattern>/SearchCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateCartController</servlet-name>
+        <url-pattern>/CreateCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteCartController</servlet-name>
+        <url-pattern>/DeleteCartController</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateInvoiceController</servlet-name>
+        <url-pattern>/CreateInvoiceController</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30

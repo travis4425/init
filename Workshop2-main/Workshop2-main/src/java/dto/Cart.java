@@ -1,75 +1,37 @@
 package dto;
 
 /**
- * CartItem DTO - Represents a cart item for display in JSP
+ * Cart DTO - Represents a cart item for display in JSP
  */
 public class Cart {
-    private String productID;
-    private String productName;
-    private float price;
-    private int quantity;
-    private float total;
-    
+
+    private String userID;
+    private String createdDate;
+
     public Cart() {
     }
-    
-    public Cart(String productID, String productName, float price, int quantity, float total) {
-        this.productID = productID;
-        this.productName = productName;
-        this.price = price;
-        this.quantity = quantity;
-        this.total = total;
+
+    public Cart(String userID, String createdDate) {
+        this.userID = userID;
+        this.createdDate = createdDate;
     }
-    
-    // Getters and Setters
-    public String getProductID() {
-        return productID;
+
+    public String getUserID() {
+        return userID;
     }
-    
-    public void setProductID(String productID) {
-        this.productID = productID;
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
-    
-    public String getProductName() {
-        return productName;
+
+    public String getCreatedDate() {
+        return createdDate;
     }
-    
-    public void setProductName(String productName) {
-        this.productName = productName;
+
+    public void setCreatedDate(String createdDate) {
+        this.createdDate = createdDate;
     }
+
     
-    public float getPrice() {
-        return price;
-    }
-    
-    public void setPrice(float price) {
-        this.price = price;
-    }
-    
-    public int getQuantity() {
-        return quantity;
-    }
-    
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-    
-    public float getTotal() {
-        return total;
-    }
-    
-    public void setTotal(float total) {
-        this.total = total;
-    }
-    
-    @Override
-    public String toString() {
-        return "CartItem{" +
-                "productID='" + productID + '\'' +
-                ", productName='" + productName + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                ", total=" + total +
-                '}';
-    }
+
 }

@@ -8,9 +8,12 @@ package dto;
 
 public class InvoiceDetail {
     private int invoiceID, productID, quantity;
-    private float price;
+    private double price;
 
-    public InvoiceDetail(int invoiceID, int productID, int quantity, float price) {
+    public InvoiceDetail() {
+    }
+
+    public InvoiceDetail(int invoiceID, int productID, int quantity, double price) {
         this.invoiceID = invoiceID;
         this.productID = productID;
         this.quantity = quantity;
@@ -41,20 +44,13 @@ public class InvoiceDetail {
         this.quantity = quantity;
     }
 
-    public float getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(double price) {
         this.price = price;
     }
-     @Override
-    public String toString() {
-        return "InvoiceDetail{" +
-                "invoiceID=" + invoiceID +
-                ", productID=" + productID +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                '}';
-    }
+    
+    
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
@@ -34,18 +30,23 @@ public class MainController extends HttpServlet {
     private static final String GET_USER = "GetUser";
     private static final String GET_USER_CONTROLLER = "GetUserController";
 
-    // Cart & Invoice actions
-    private static final String ADD_TO_CART = "AddToCart";
-    private static final String CART_LIST = "ViewCart";
+    private static final String SEARCH_CART = "ViewCart";
+    private static final String SEARCH_CART_CONTROLLER = "SearchCartController";
+    private static final String CREATE_CART = "CreateCart";
+    private static final String CREATE_CART_CONTROLLER = "CreateCartController";
+    private static final String DELETE_CART = "DeleteCart";
+    private static final String DELETE_CART_CONTROLLER = "DeleteCartController";
     private static final String UPDATE_CART = "UpdateCart";
-    private static final String REMOVE_FROM_CART = "RemoveFromCart";
-    private static final String CLEAR_CART = "ClearCart";
-    private static final String CART_CONTROLLER = "CartController";
+    private static final String UPDATE_CART_CONTROLLER = "UpdateCartController";
 
-    private static final String CHECKOUT = "Checkout";
-    private static final String VIEW_INVOICES = "ViewInvoices";
-    private static final String VIEW_INVOICE_DETAIL = "ViewInvoiceDetail";
-    private static final String INVOICE_CONTROLLER = "InvoiceController";
+    private static final String SEARCH_INVOICE = "ViewInvoice";
+    private static final String SEARCH_INVOICE_CONTROLLER = "SearchInvoiceController";
+    private static final String CREATE_INVOICE = "CreateInvoice";
+    private static final String CREATE_INVOICE_CONTROLLER = "CreateInvoiceController";
+    private static final String DELETE_INVOICE = "DeleteInvoice";
+    private static final String DELETE_INVOICE_CONTROLLER = "DeleteInvoiceController";
+    private static final String UPDATE_INVOICE = "UpdateInvoice";
+    private static final String UPDATE_INVOICE_CONTROLLER = "UpdateInvoiceController";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -67,29 +68,23 @@ public class MainController extends HttpServlet {
                 url = UPDATE_USER_CONTROLLER;
             } else if (DELETE_USER.equals(action)) {
                 url = DELETE_USER_CONTROLLER;
-            } // Cart actions - Fixed: Xử lý từng action riêng biệt
-            else if (ADD_TO_CART.equals(action)) {
-                request.setAttribute("cartAction", "add");
-                url = CART_CONTROLLER;
-            } else if (CART_LIST.equals(action)) {
-                request.setAttribute("cartAction", "list");
-                url = CART_CONTROLLER;
+            } else if (SEARCH_CART.equals(action)) {
+                url = SEARCH_CART_CONTROLLER;
+            } else if (CREATE_CART.equals(action)) {
+                url = CREATE_CART_CONTROLLER;
+            } else if (DELETE_CART.equals(action)) {
+                url = DELETE_CART_CONTROLLER;
             } else if (UPDATE_CART.equals(action)) {
-                request.setAttribute("cartAction", "update");
-                url = CART_CONTROLLER;
-            } else if (REMOVE_FROM_CART.equals(action)) {
-                request.setAttribute("cartAction", "remove");
-                url = CART_CONTROLLER;
-            } else if (CLEAR_CART.equals(action)) {
-                request.setAttribute("cartAction", "clear");
-                url = CART_CONTROLLER;
-            } // Invoice actions
-            else if (CHECKOUT.equals(action)) {
-                url = INVOICE_CONTROLLER;
-            } else if (VIEW_INVOICES.equals(action)) {
-                url = INVOICE_CONTROLLER;
-            } else if (VIEW_INVOICE_DETAIL.equals(action)) {
-                url = INVOICE_CONTROLLER;
+                url = UPDATE_CART_CONTROLLER;
+            }
+            else if (SEARCH_INVOICE.equals(action)) {
+                url = SEARCH_INVOICE_CONTROLLER;
+            } else if (CREATE_INVOICE.equals(action)) {
+                url = CREATE_INVOICE_CONTROLLER;
+            } else if (DELETE_INVOICE.equals(action)) {
+                url = DELETE_INVOICE_CONTROLLER;
+            } else if (UPDATE_INVOICE.equals(action)) {
+                url = UPDATE_INVOICE_CONTROLLER;
             } else {
                 url = "login.jsp";
             }

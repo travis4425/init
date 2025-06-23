@@ -1,117 +1,97 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package dao;
 
-import dto.CartDetail;
-import dto.Cart;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import utils.DBUtils;
+import dto.Cart;
 
 public class CartDAO {
-    
-    // Tạo cart mới cho user
-    public int createCart(String userID) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO tblCarts(userID, createdDate) VALUES (?, ?)";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, userID);
-            ps.setDate(2, java.sql.Date.valueOf(LocalDate.now()));
-            
-            int rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        return generatedKeys.getInt(1);
+
+    public boolean createCart(String userID, String createdDate) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM tblCarts WHERE userID = ? AND createdDate = ?";
+        try {
+            try ( Connection conn = DBUtils.getConnection();  PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
+                checkPs.setString(1, userID);
+                checkPs.setString(2, createdDate);
+                try ( ResultSet rs = checkPs.executeQuery()) {
+                    if (rs.next() && rs.getInt(1) > 0) {
+                        return false;
                     }
                 }
             }
+            String insertSql = "INSERT INTO tblCarts (userID, createdDate) VALUES (?, ?)";
+            try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(insertSql)) {
+                ps.setString(1, userID);
+                ps.setString(2, createdDate);
+                return ps.executeUpdate() > 0;
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
-        return -1;
+        return false;
     }
-    
-    // Lấy cart hiện tại của user (hoặc tạo mới nếu chưa có)
-    public int getCurrentCartID(String userID) throws SQLException, ClassNotFoundException {
-        String sql = "SELECT TOP 1 cartID FROM tblCarts WHERE userID = ? ORDER BY createdDate DESC";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, userID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("cartID");
-            } else {
-                // Tạo cart mới nếu chưa có
-                return createCart(userID);
+
+    public boolean deleteCart(String id) throws Exception {
+        String sql = "DELETE FROM tblCarts WHERE userID = ?";
+        boolean isDeleted = false;
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);) {
+            ps.setString(1, id);
+            isDeleted = ps.executeUpdate() > 0;
+        }
+        return isDeleted;
+    }
+
+    public ArrayList<Cart> search(String search) throws SQLException {
+        ArrayList<Cart> list = new ArrayList<>();
+        String sql = "SELECT * FROM tblCarts WHERE userID LIKE ?";
+        ResultSet rs = null;
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            if (conn != null) {
+                ps.setString(1, '%' + search + '%');
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    String userID = rs.getString("userID");
+                    String createdDate = rs.getString("createdDate");
+                    list.add(new Cart(userID, createdDate));
+                }
+            }
+        } catch (Exception e) {
+        } finally {
+            if (rs != null) {
+                rs.close();
             }
         }
+        return list;
     }
-    
-    // FIX: Tạo Cart DTO class riêng
-    public static class Cart {
-        private int cartID;
-        private String userID;
-        private LocalDate createdDate;
-        
-        public Cart(int cartID, String userID, LocalDate createdDate) {
-            this.cartID = cartID;
-            this.userID = userID;
-            this.createdDate = createdDate;
-        }
-        
-        // Getters and setters
-        public int getCartID() { return cartID; }
-        public void setCartID(int cartID) { this.cartID = cartID; }
-        
-        public String getUserID() { return userID; }
-        public void setUserID(String userID) { this.userID = userID; }
-        
-        public LocalDate getCreatedDate() { return createdDate; }
-        public void setCreatedDate(LocalDate createdDate) { this.createdDate = createdDate; }
-    }
-    
-    // Lấy thông tin cart - FIX return type
-    public Cart getCartByID(int cartID) throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM tblCarts WHERE cartID = ?";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new Cart(
-                    rs.getInt("cartID"),
-                    rs.getString("userID"),
-                    rs.getDate("createdDate").toLocalDate()
-                );
+
+    public Cart getCartById(String id) throws SQLException {
+        String sql = "SELECT * FROM tblCarts WHERE userID = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, id);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Cart(rs.getString("userID"), rs.getString("createdDate"));
+                }
             }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
         return null;
     }
-    
-    // Xóa cart (sau khi thanh toán)
-    public boolean deleteCart(int cartID) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM tblCarts WHERE cartID = ?";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            return ps.executeUpdate() > 0;
+
+    public boolean updateCart(String userID, String createdDate) throws Exception {
+        String sql = "UPDATE tblCarts SET createdDate = ? WHERE userID = ?";
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, createdDate); // createdDate đặt trước
+            stmt.setString(2, userID);         // cartID đặt sau
+            return stmt.executeUpdate() > 0;
         }
-    }
-    
-    // Kiểm tra cart có tồn tại không
-    public boolean cartExists(int cartID) throws SQLException, ClassNotFoundException {
-        String sql = "SELECT COUNT(*) FROM tblCarts WHERE cartID = ?";
-        try (Connection conn = DBUtils.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        }
-        return false;
     }
 }
