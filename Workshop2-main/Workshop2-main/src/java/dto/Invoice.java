@@ -9,19 +9,20 @@ import java.time.LocalDate;
 
 
 public class Invoice {
+    
     private String userID;
-    private double totalAmount;
     private String status;
-    private String createdDate;
+    private float totalAmount;
+    private LocalDate createdDate;
 
-    public Invoice() {
+    public Invoice(String userID, String status, float totalAmount, LocalDate createdDate) {
+        this.userID = userID;
+        this.status = status;
+        this.totalAmount = totalAmount;
+        this.createdDate = createdDate;
     }
 
-    public Invoice(String userID, double totalAmount, String status, String createdDate) {
-        this.userID = userID;
-        this.totalAmount = totalAmount;
-        this.status = status;
-        this.createdDate = createdDate;
+    public Invoice() {
     }
 
     public String getUserID() {
@@ -32,14 +33,6 @@ public class Invoice {
         this.userID = userID;
     }
 
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -48,13 +41,20 @@ public class Invoice {
         this.status = status;
     }
 
-    public String getCreatedDate() {
+    public float getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(float totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
-    
     
 }

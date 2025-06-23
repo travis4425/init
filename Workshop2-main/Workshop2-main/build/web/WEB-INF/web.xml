@@ -8,10 +8,6 @@
         <servlet-class>controller.cart.UpdateCartController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>CheckoutController</servlet-name>
-        <servlet-class>controller.invoice.CheckoutController</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ViewInvoiceController</servlet-name>
         <servlet-class>controller.invoice.ViewInvoiceController</servlet-class>
     </servlet>
@@ -34,10 +30,6 @@
     <servlet-mapping>
         <servlet-name>UpdateCartController</servlet-name>
         <url-pattern>/UpdateCartController</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CheckoutController</servlet-name>
-        <url-pattern>/CheckoutController</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ViewInvoiceController</servlet-name>

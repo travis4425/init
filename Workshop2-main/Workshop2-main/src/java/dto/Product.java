@@ -1,118 +1,110 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package dto;
 
-import java.util.Objects;
 
 public class Product {
     private int productID, categoryID, quantity;
     private float price;
-    private String name, seller, status;
+    private String name, sellerID, status, cateName, sellerIDFullName;
+
     
-    // Constructor chính
-    public Product(int productID, int categoryID, int quantity, float price, String name, String seller, String status) {
+
+    public Product(int productID, int categoryID, int quantity, float price, String name, String sellerID, String status) {
         this.productID = productID;
         this.categoryID = categoryID;
         this.quantity = quantity;
         this.price = price;
         this.name = name;
-        this.seller = seller;
+        this.sellerID = sellerID;
         this.status = status;
     }
-    
-    // Constructor cho CartDetailDAO.getCartWithProducts() - FIX LỖI
-    public Product(String productID, String productName, float price, int stockQuantity, boolean status) {
-        this.productID = Integer.parseInt(productID);
-        this.categoryID = 0; // Default
-        this.quantity = stockQuantity;
+
+    public Product(int productID, int quantity, float price, String name, String sellerID, String status, String cateName, String sellerIDFullName) {
+        this.productID = productID;
+        this.quantity = quantity;
         this.price = price;
-        this.name = productName;
-        this.seller = ""; // Default
-        this.status = status ? "active" : "inactive";
+        this.name = name;
+        this.sellerID = sellerID;
+        this.status = status;
+        this.cateName = cateName;
+        this.sellerIDFullName = sellerIDFullName;
     }
     
-    // Getters and Setters
+    
+    
+    public String getCateName() {
+        return cateName;
+    }
+
+    public void setCateName(String cateName) {
+        this.cateName = cateName;
+    }
+
     public int getProductID() {
         return productID;
     }
-    
-    public String getProductIDAsString() {
-        return String.valueOf(productID);
-    }
-    
+
     public void setProductID(int productID) {
         this.productID = productID;
     }
-    
+
     public int getCategoryID() {
         return categoryID;
     }
-    
+
     public void setCategoryID(int categoryID) {
         this.categoryID = categoryID;
     }
-    
+
     public int getQuantity() {
         return quantity;
     }
-    
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-    
+
     public float getPrice() {
         return price;
     }
-    
+
     public void setPrice(float price) {
         this.price = price;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
-    public String getSeller() {
-        return seller;
+
+    public String getSellerID() {
+        return sellerID;
     }
-    
-    public void setSeller(String seller) {
-        this.seller = seller;
+
+    public void setSellerID(String sellerID) {
+        this.sellerID = sellerID;
     }
-    
+
     public String getStatus() {
         return status;
     }
-    
+
     public void setStatus(String status) {
         this.status = status;
     }
     
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return productID == product.productID;
+    public String getSellerFullName() {
+        return sellerIDFullName;
     }
-    
-    @Override
-    public int hashCode() {
-        return Objects.hash(productID);
-    }
-    
-    @Override
-    public String toString() {
-        return "Product{" +
-                "productID=" + productID +
-                ", categoryID=" + categoryID +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", name='" + name + '\'' +
-                ", seller='" + seller + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+
+    public void setSellerFullName(String sellerIDFullName) {
+        this.sellerIDFullName = sellerIDFullName;
     }
 }

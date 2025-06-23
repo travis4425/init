@@ -86,6 +86,22 @@ public class CartDAO {
         return null;
     }
 
+    public int getCurrentCartID(String userID) throws SQLException {
+        String sql = "SELECT TOP 1 cartID FROM tblCarts WHERE userID = ? ORDER BY createdDate DESC";
+
+        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, userID);
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("cartID");
+                }
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return -1; // Không tìm thấy cart
+    }
+
     public boolean updateCart(String userID, String createdDate) throws Exception {
         String sql = "UPDATE tblCarts SET createdDate = ? WHERE userID = ?";
         try ( Connection conn = DBUtils.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {

@@ -18,40 +18,16 @@ import jakarta.servlet.http.HttpSession;
 @WebServlet(name = "DeleteInvoiceController", urlPatterns = {"/DeleteInvoiceController"})
 public class DeleteInvoiceController extends HttpServlet {
 
+    private final InvoiceDAO invoiceDAO = new InvoiceDAO();
+    private final InvoiceDetailDAO invoiceDetailDAO = new InvoiceDetailDAO();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try {
-            User loginUser = (User) request.getSession().getAttribute("LOGIN_USER");
-            if (loginUser == null) {
-                response.sendRedirect("login.jsp");
-                return;
-            }
-
-        }
-    }
-    private InvoiceDAO invoiceDAO = new InvoiceDAO();
-    private InvoiceDetailDAO invoiceDetailDAO = new InvoiceDetailDAO();
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         User loginUser = (User) session.getAttribute("LOGIN_USER");
 
-        // Kiểm tra đăng nhập
         if (loginUser == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -66,7 +42,6 @@ public class DeleteInvoiceController extends HttpServlet {
         }
     }
 
-    // Method xóa hóa đơn (chỉ admin)
     private void deleteInvoice(HttpServletRequest request, HttpServletResponse response, User user)
             throws Exception {
 
@@ -113,6 +88,18 @@ public class DeleteInvoiceController extends HttpServlet {
             request.setAttribute("MSG", "ID hóa đơn không hợp lệ.");
             response.sendRedirect("MainController?action=ViewInvoices");
         }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     @Override

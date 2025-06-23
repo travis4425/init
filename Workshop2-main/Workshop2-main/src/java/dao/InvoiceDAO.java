@@ -1,8 +1,6 @@
 package dao;
 
 import dto.Invoice;
-import dto.InvoiceDetail;
-import dto.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,16 +8,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import utils.DBUtils;
 
 public class InvoiceDAO {
     
     // Tạo hóa đơn mới - ĐÃ SỬA LỖI SQL
     public int createInvoice(String userID, float totalAmount) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO tblInvoices(userID, status, totalAmount, createdDate) VALUES (?, ?, ?, ?); SELECT SCOPE_IDENTITY()";
+        String sql = "INSERT INTO tblInvoices(userID, status, totalAmount, createdDate) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBUtils.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, userID);
@@ -48,7 +44,6 @@ public class InvoiceDAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new Invoice(
-                    rs.getInt("invoiceID"),
                     rs.getString("userID"),
                     rs.getString("status"),
                     rs.getFloat("totalAmount"),
@@ -69,7 +64,6 @@ public class InvoiceDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Invoice invoice = new Invoice(
-                    rs.getInt("invoiceID"),
                     rs.getString("userID"),
                     rs.getString("status"),
                     rs.getFloat("totalAmount"),
@@ -101,7 +95,6 @@ public class InvoiceDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Invoice invoice = new Invoice(
-                    rs.getInt("invoiceID"),
                     rs.getString("userID"),
                     rs.getString("status"),
                     rs.getFloat("totalAmount"),
@@ -153,7 +146,6 @@ public class InvoiceDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Invoice invoice = new Invoice(
-                    rs.getInt("invoiceID"),
                     rs.getString("userID"),
                     rs.getString("status"),
                     rs.getFloat("totalAmount"),
