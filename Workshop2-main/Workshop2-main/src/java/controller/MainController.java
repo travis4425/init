@@ -1,8 +1,7 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller;
 
 import java.io.IOException;
@@ -16,9 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Admin
  */
-@WebServlet(name="MainController", urlPatterns={"/MainController"})
+@WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
-   
+
     // login, register
     private static final String LOGIN = "Login";
     private static final String LOGIN_CONTROLLER = "LoginController";
@@ -36,7 +35,7 @@ public class MainController extends HttpServlet {
     private static final String DELETE_USER_CONTROLLER = "DeleteUserController";
     private static final String GET_USER = "GetUser";
     private static final String GET_USER_CONTROLLER = "GetUserController";
-    
+
     // category
     private static final String SEARCH_CATEGORY = "ViewCategories";
     private static final String SEARCH_CATEGORY_CONTROLLER = "SearchCategoryController";
@@ -46,7 +45,7 @@ public class MainController extends HttpServlet {
     private static final String DELETE_CATEGORY_CONTROLLER = "DeleteCategoryController";
     private static final String UPDATE_CATEGORY = "UpdateCategory";
     private static final String UPDATE_CATEGORY_CONTROLLER = "UpdateCategoryController";
-   
+
     // product
     private static final String SEARCH_PRODUCT = "ViewProducts";
     private static final String SEARCH_PRODUCT_CONTROLLER = "SearchProductController";
@@ -56,7 +55,7 @@ public class MainController extends HttpServlet {
     private static final String DELETE_PRODUCT_CONTROLLER = "DeleteProductController";
     private static final String UPDATE_PRODUCT = "UpdateProduct";
     private static final String UPDATE_PRODUCT_CONTROLLER = "UpdateProductController";
-    
+
     // customer care
     private static final String CUSTOMER_CARE = "CustomerCare";
     private static final String CUSTOMER_CARE_CONTROLLER = "CustomerCareController";
@@ -68,15 +67,15 @@ public class MainController extends HttpServlet {
     private static final String REPLY_CUSTOMER_CARE_CONTROLLER = "ReplyCustomerCareController";
     private static final String DELETE_CUSTOMER_CARE = "DeleteCustomerCare";
     private static final String DELETE_CUSTOMER_CARE_CONTROLLER = "DeleteCustomerCareController";
-    
+
     // promotion
     private static final String PROMOTION = "Promotion";
     private static final String PROMOTION_CONTROLLER = "PromotionController";
-    private static final String APPLY_PROMOTION = "ApplyPromotion"; 
+    private static final String APPLY_PROMOTION = "ApplyPromotion";
     private static final String APPLY_PROMOTION_CONTROLLER = "ApplyPromotionController";
-    private static final String APPLY_CATEGORY_PROMOTION = "ApplyCategoryPromotion"; 
+    private static final String APPLY_CATEGORY_PROMOTION = "ApplyCategoryPromotion";
     private static final String APPLY_CATEGORY_PROMOTION_CONTROLLER = "ApplyCategoryPromotionController";
-    
+
     // cart
     private static final String ADD_TO_CART = "AddToCart";
     private static final String ADD_TO_CART_CONTROLLER = "AddToCartController";
@@ -86,11 +85,11 @@ public class MainController extends HttpServlet {
     private static final String DELETE_FROM_CART_CONTROLLER = "DeleteFromCartController";
     private static final String SEARCH_CART = "SearchCart";
     private static final String SEARCH_CART_CONTROLLER = "SearchCartController";
-    
+
     // pay
     private static final String CHECKOUT = "Checkout";
     private static final String CHECKOUT_CONTROLLER = "CheckoutController";
-    
+
     // invoice
     private static final String VIEW_INVOICE = "ViewInvoice";
     private static final String VIEW_INVOICE_CONTROLLER = "ViewInvoiceController";
@@ -98,7 +97,7 @@ public class MainController extends HttpServlet {
     private static final String CANCEL_INVOICE_CONTROLLER = "CancelInvoiceController";
     private static final String SEARCH_INVOICE = "SearchInvoice";
     private static final String SEARCH_INVOICE_CONTROLLER = "SearchInvoiceController";
-    
+
     // return
     private static final String VIEW_RETURN = "ViewReturn";
     private static final String VIEW_RETURN_CONTROLLER = "ViewReturnController";
@@ -106,7 +105,7 @@ public class MainController extends HttpServlet {
     private static final String RETURN_REQUEST_CONTROLLER = "ReturnRequestController";
     private static final String UPDATE_STATUS_RETURN = "UpdateStatusReturn";
     private static final String UPDATE_STATUS_RETURN_CONTROLLER = "UpdateStatusReturnController";
-    
+
     // delivery
     private static final String VIEW_DELIVERY = "ViewDelivery";
     private static final String VIEW_DELIVERY_CONTROLLER = "ViewDeliveryController";
@@ -114,8 +113,17 @@ public class MainController extends HttpServlet {
     private static final String UPDATE_STATUS_DELIVERY_CONTROLLER = "UpdateStatusDeliveryController";
     private static final String SEARCH_DELIVERY = "SearchDelivery";
     private static final String SEARCH_DELIVERY_CONTROLLER = "SearchDeliveryController";
-    
-    
+
+    // inventory
+    private static final String INVENTORY = "Inventory";
+    private static final String INVENTORY_CONTROLLER = "SearchInventoryController";
+    private static final String CREATE_INVENTORY = "CreateInventory";
+    private static final String CREATE_INVENTORY_CONTROLLER = "CreateInventoryController";
+    private static final String UPDATE_INVENTORY = "UpdateInventory";
+    private static final String UPDATE_INVENTORY_CONTROLLER = "UpdateInventoryController";
+    private static final String DELETE_INVENTORY = "DeleteInventory";
+    private static final String DELETE_INVENTORY_CONTROLLER = "DeleteInventoryController";
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -165,9 +173,9 @@ public class MainController extends HttpServlet {
             } else if (PROMOTION.equals(action)) {
                 url = PROMOTION_CONTROLLER;
             } else if (APPLY_PROMOTION.equals(action)) {
-                url = APPLY_PROMOTION_CONTROLLER; 
+                url = APPLY_PROMOTION_CONTROLLER;
             } else if (APPLY_CATEGORY_PROMOTION.equals(action)) {
-                url = APPLY_CATEGORY_PROMOTION_CONTROLLER; 
+                url = APPLY_CATEGORY_PROMOTION_CONTROLLER;
             } else if (ADD_TO_CART.equals(action)) {
                 url = ADD_TO_CART_CONTROLLER;
             } else if (VIEW_CART.equals(action)) {
@@ -184,7 +192,7 @@ public class MainController extends HttpServlet {
                 url = CANCEL_INVOICE_CONTROLLER;
             } else if (VIEW_RETURN.equals(action)) {
                 url = VIEW_RETURN_CONTROLLER;
-            }  else if (VIEW_DELIVERY.equals(action)) {
+            } else if (VIEW_DELIVERY.equals(action)) {
                 url = VIEW_DELIVERY_CONTROLLER;
             } else if (UPDATE_STATUS_DELIVERY.equals(action)) {
                 url = UPDATE_STATUS_DELIVERY_CONTROLLER;
@@ -196,8 +204,15 @@ public class MainController extends HttpServlet {
                 url = SEARCH_INVOICE_CONTROLLER;
             } else if (SEARCH_DELIVERY.equals(action)) {
                 url = SEARCH_DELIVERY_CONTROLLER;
-            }
-            else {
+            } else if (INVENTORY.equals(action)) {
+                url = "inventory.jsp";
+            } else if (CREATE_INVENTORY.equals(action)) {
+                url = CREATE_INVENTORY_CONTROLLER;
+            } else if (UPDATE_INVENTORY.equals(action)) {
+                url = UPDATE_INVENTORY_CONTROLLER;
+            } else if (DELETE_INVENTORY.equals(action)) {
+                url = DELETE_INVENTORY_CONTROLLER;
+            } else {
                 url = "login.jsp";
             }
         } catch (Exception e) {
@@ -206,6 +221,7 @@ public class MainController extends HttpServlet {
             request.getRequestDispatcher(url).forward(request, response);
         }
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

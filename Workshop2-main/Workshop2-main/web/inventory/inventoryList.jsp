@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="dto.Category" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -50,7 +51,7 @@
                     <a href="MainController?action=ViewReturn">Return</a>
                     <a href="PromotionController">Promotion</a>
                     <a href="MainController?action=CustomerCare">Customer Care</a>
-                    <a href="MainController?action=Inventory">Inventory</a>
+                    <a href="MainController?action=SearchInventoryController">Inventory</a>
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
                         <a href="MainController?action=SearchUser">User Management</a>
                     </c:if>
