@@ -7,17 +7,25 @@ package dto;
 
 
 public class InvoiceDetail {
-    private int invoiceID, productID, quantity;
-    private double price;
+    private int invoiceID, quantity;
+    private Product product;
+    private float price;
+    
+    public InvoiceDetail() {}
 
-    public InvoiceDetail() {
+    public InvoiceDetail(int invoiceID, int quantity, Product product, float price) {
+        this.invoiceID = invoiceID;
+        this.quantity = quantity;
+        this.product = product;
+        this.price = price;
     }
 
-    public InvoiceDetail(int invoiceID, int productID, int quantity, double price) {
-        this.invoiceID = invoiceID;
-        this.productID = productID;
-        this.quantity = quantity;
-        this.price = price;
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public int getInvoiceID() {
@@ -28,14 +36,6 @@ public class InvoiceDetail {
         this.invoiceID = invoiceID;
     }
 
-    public int getProductID() {
-        return productID;
-    }
-
-    public void setProductID(int productID) {
-        this.productID = productID;
-    }
-
     public int getQuantity() {
         return quantity;
     }
@@ -44,13 +44,11 @@ public class InvoiceDetail {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
-    
-    
 }

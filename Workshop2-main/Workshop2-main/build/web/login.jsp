@@ -140,11 +140,6 @@
                 <i class='bx bxs-lock-alt'></i>
             </div>
 
-            <div class="remember-forgot">
-                <label><input type="checkbox"> Remember me</label>
-                <a href="#">Forgot password?</a>
-            </div>
-
             <input type="submit" name="action" value="Login">
 
             <div class="register-link">

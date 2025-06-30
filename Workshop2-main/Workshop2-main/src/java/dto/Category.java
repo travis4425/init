@@ -7,13 +7,20 @@ package dto;
 
 
 public class Category {
-    private int categoryID;
+    private int categoryID, promoID;
     private String categoryName, description;
 
     public Category(int categoryID, String categoryName, String description) {
         this.categoryID = categoryID;
         this.categoryName = categoryName;
         this.description = description;
+    }
+    
+    public Category(int categoryID, String categoryName, String description, int promoID) {
+        this.categoryID = categoryID;
+        this.categoryName = categoryName;
+        this.description = description;
+        this.promoID = promoID;
     }
 
     public int getCategoryID() {
@@ -38,6 +45,14 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getPromoID() {
+        return promoID;
+    }
+
+    public void setPromoID(int promoID) {
+        this.promoID = promoID;
     }
     
     

@@ -2,20 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dao/CartDAO.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dao/InvoiceDAO.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/web/error.jsp</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dao/CartDetailDAO.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dto/CartDetail.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/cart/UpdateCartController.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/MainController.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dto/Cart.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/cart/DeleteCartController.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/cart/CreateCartController.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/cart/SearchCartController.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dto/InvoiceDetail.java</file>
-            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dto/Invoice.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

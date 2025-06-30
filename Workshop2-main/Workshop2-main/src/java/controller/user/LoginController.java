@@ -32,7 +32,7 @@ public class LoginController extends HttpServlet {
             
             if (user != null) {
                 req.getSession().setAttribute("LOGIN_USER", user);
-                resp.sendRedirect("productList.jsp");
+                resp.sendRedirect("welcomePage.jsp");
             } else {
                 req.setAttribute("MSG", "Invalid user or password");
                 req.getRequestDispatcher("login.jsp").forward(req, resp);

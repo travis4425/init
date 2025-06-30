@@ -1,222 +1,84 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package dao;
 
-import dto.Cart;
-import dto.Product;
 import dto.CartDetail;
+import dto.Product;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import utils.DBUtils;
 
+
 public class CartDetailDAO {
+    // Thêm sản phẩm vào giỏ
+    public void insertCartDetail(CartDetail detail) throws Exception {
+        String sql = "INSERT INTO tblCartDetails (cartID, productID, quantity) VALUES (?, ?, ?)";
+        try (Connection con = DBUtils.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-    public boolean createCartDetail(int cartID, int productID, int quantity) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM tblCartDetails WHERE cartID = ? AND productID = ? AND quantity = ?";
-        try {
-            try ( Connection conn = DBUtils.getConnection();  PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
-                checkPs.setInt(1, cartID);
-                checkPs.setInt(2, productID);
-                checkPs.setInt(3, quantity);
-                try ( ResultSet rs = checkPs.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) > 0) {
-                        return false;
-                    }
-                }
-            }
-            String insertSql = "INSERT INTO tblCartDetails (cartID, productID, quantity) VALUES (?, ?, ?)";
-            try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(insertSql)) {
-                ps.setInt(1, cartID);
-                ps.setInt(2, productID);
-                ps.setInt(3, quantity);
-                return ps.executeUpdate() > 0;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean deleteCartDetail(int cartID, int productID) throws Exception {
-        String sql = "DELETE FROM tblCartDetails WHERE cartID = ? AND productID = ?";
-        boolean isDeleted = false;
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            ps.setInt(2, productID);
-            return ps.executeUpdate() > 0;
+            ps.setInt(1, detail.getCartID());
+            ps.setInt(2, detail.getProduct().getProductID());
+            ps.setInt(3, detail.getQuantity());
+            ps.executeUpdate();
         }
     }
+    
+    // Lấy danh sách sản phẩm theo cartID
+    public List<CartDetail> getCartDetails(int cartID) throws Exception {
+        List<CartDetail> list = new ArrayList<>();
+        String sql = "SELECT cd.productID, cd.quantity, p.name, p.price, c.categoryName FROM tblCartDetails cd " +
+                     "JOIN tblProducts p ON cd.productID = p.productID " +
+                     "JOIN tblCategories c on p.categoryID = c.categoryID " + 
+                     "WHERE cd.cartID = ?";
 
-    public ArrayList<CartDetail> getCartDetailsByCartID(int cartID) throws SQLException {
-        ArrayList<CartDetail> cartDetails = new ArrayList<>();
-        String sql = "SELECT cartID, productID, quantity FROM tblCartDetails WHERE cartID = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection con = DBUtils.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setInt(1, cartID);
-            try ( ResultSet rs = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    int cartId = rs.getInt("cartID");
                     int productID = rs.getInt("productID");
+                    String name = rs.getString("name");
+                    float price = rs.getFloat("price");
                     int quantity = rs.getInt("quantity");
+                    String cateName = rs.getString("categoryName");
 
-                    CartDetail cartDetail = new CartDetail(cartId, productID, quantity);
-                    cartDetails.add(cartDetail);
+                    Product product = new Product(productID, name, price, cateName);
+                    list.add(new CartDetail(cartID, product, quantity));
                 }
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-        return cartDetails;
+        return list;
     }
-
-    public CartDetail getCartDetail(int cartID, int productID) throws SQLException {
-        String sql = "SELECT cartID, productID, quantity FROM tblCartDetails WHERE cartID = ? AND productID = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            ps.setInt(2, productID);
-            try ( ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new CartDetail(
-                            rs.getInt("cartID"),
-                            rs.getInt("productID"),
-                            rs.getInt("quantity")
-                    );
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public boolean updateCartDetailQuantity(int cartID, int productID, int newQuantity) throws SQLException {
+    
+    // Cập nhật số lượng sản phẩm trong giỏ
+    public void updateQuantity(int cartID, int productID, int quantity) throws Exception {
         String sql = "UPDATE tblCartDetails SET quantity = ? WHERE cartID = ? AND productID = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, newQuantity);
+        try (Connection con = DBUtils.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, quantity);
             ps.setInt(2, cartID);
             ps.setInt(3, productID);
-            return ps.executeUpdate() > 0;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            ps.executeUpdate();
         }
-        return false;
     }
-
-    public boolean clearCartDetails(int cartID) throws SQLException {
-        String sql = "DELETE FROM tblCartDetails WHERE cartID = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            return ps.executeUpdate() >= 0; // Even if no rows affected, it's successful
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public Map<Product, Integer> getCartWithProducts(int cartID) throws SQLException {
-        Map<Product, Integer> cartItems = new HashMap<>();
-        String sql = "SELECT cd.quantity, p.productID, p.name, p.price, p.categoryID, "
-                + "p.sellerID, p.status, p.quantity as productQuantity "
-                + "FROM tblCartDetails cd "
-                + "INNER JOIN tblProducts p ON cd.productID = p.productID "
-                + "WHERE cd.cartID = ?";
-
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            try ( ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Product product = new Product(
-                            rs.getInt("productID"),
-                            rs.getInt("categoryID"),
-                            rs.getInt("productQuantity"),
-                            rs.getFloat("price"),
-                            rs.getString("name"),
-                            rs.getString("sellerID"),
-                            rs.getString("status")
-                    );
-
-                    int quantity = rs.getInt("quantity");
-                    cartItems.put(product, quantity);
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return cartItems;
-    }
-    public float getTotalAmount(int cartID) throws SQLException {
-    String sql = "SELECT SUM(cd.quantity * p.price) as totalAmount " +
-                "FROM tblCartDetails cd " +
-                "INNER JOIN tblProducts p ON cd.productID = p.productID " +
-                "WHERE cd.cartID = ?";
     
-    try (Connection conn = DBUtils.getConnection(); 
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, cartID);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getFloat("totalAmount");
-            }
-        }
-    } catch (ClassNotFoundException e) {
-        e.printStackTrace();
-    }
-    return 0.0f;
-}
+    // Xóa sản phẩm khỏi giỏ
+    public void deleteCartDetail(int cartID, int productID) throws Exception {
+        String sql = "DELETE FROM tblCartDetails WHERE cartID = ? AND productID = ?";
+        try (Connection con = DBUtils.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
 
-    //Get total quantity of items in a cart
-/*
-    public int getTotalQuantityInCart(int cartID) throws SQLException {
-        String sql = "SELECT SUM(quantity) as totalQuantity FROM tblCartDetails WHERE cartID = ?";
-        try (Connection conn = DBUtils.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, cartID);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("totalQuantity");
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            ps.setInt(2, productID);
+            ps.executeUpdate();
         }
-        return 0;
     }
-     */
-    //Get cart details with product information (JOIN query)
-/*
-public Map<Product, Integer> getCartDetailsWithProducts(int cartID) throws SQLException {
-        Map<Product, Integer> cartItems = new HashMap<>();
-        String sql = "SELECT cd.quantity, p.productID, p.name, p.price, p.categoryID, p.sellerID, p.status, p.promoID " +
-                    "FROM tblCartDetails cd " +
-                    "INNER JOIN tblProducts p ON cd.productID = p.productID " +
-                    "WHERE cd.cartID = ?";
-        
-        try (Connection conn = DBUtils.getConnection(); 
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, cartID);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Product product = new Product(
-                        rs.getInt("productID"),
-                        rs.getString("name"),
-                        rs.getInt("categoryID"),
-                        rs.getDouble("price"),
-                        rs.getInt("quantity"), // This would be product stock, not cart quantity
-                        rs.getString("sellerID"),
-                        rs.getString("status"),
-                        rs.getInt("promoID")
-                    );
-                    
-                    int quantity = rs.getInt("quantity");
-                    cartItems.put(product, quantity);
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return cartItems;
-    }    
-     */
 }

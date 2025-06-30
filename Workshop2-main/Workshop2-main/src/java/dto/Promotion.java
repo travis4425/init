@@ -5,21 +5,22 @@
 
 package dto;
 
-import java.time.LocalDate;
-
+import java.sql.Date;
 
 public class Promotion {
     private int promoID;
-    private float discountPercent;
-    private LocalDate startDate, endDate;
-    private String name, status;
+    private String name;
+    private int discountPercent;
+    private Date startDate;
+    private Date endDate;
+    private boolean status;
 
-    public Promotion(int promoID, float discountPercent, LocalDate startDate, LocalDate endDate, String name, String status) {
+    public Promotion(int promoID, String name, int discountPercent, Date startDate, Date endDate, boolean status) {
         this.promoID = promoID;
+        this.name = name;
         this.discountPercent = discountPercent;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.name = name;
         this.status = status;
     }
 
@@ -27,49 +28,23 @@ public class Promotion {
         return promoID;
     }
 
-    public void setPromoID(int promoID) {
-        this.promoID = promoID;
-    }
-
-    public float getDiscountPercent() {
-        return discountPercent;
-    }
-
-    public void setDiscountPercent(float discountPercent) {
-        this.discountPercent = discountPercent;
-    }
-
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public int getDiscountPercent() {
+        return discountPercent;
     }
 
-    public String getStatus() {
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public boolean isStatus() {
         return status;
     }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-    
-    
 }

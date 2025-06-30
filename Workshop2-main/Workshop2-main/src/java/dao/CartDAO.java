@@ -4,110 +4,119 @@
  */
 package dao;
 
+import dto.Cart;
+import dto.CartDetail;
+import dto.Product;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import utils.DBUtils;
-import dto.Cart;
 
 public class CartDAO {
 
-    public boolean createCart(String userID, String createdDate) throws SQLException {
-        String checkSql = "SELECT COUNT(*) FROM tblCarts WHERE userID = ? AND createdDate = ?";
-        try {
-            try ( Connection conn = DBUtils.getConnection();  PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
-                checkPs.setString(1, userID);
-                checkPs.setString(2, createdDate);
-                try ( ResultSet rs = checkPs.executeQuery()) {
-                    if (rs.next() && rs.getInt(1) > 0) {
-                        return false;
-                    }
+    // Thêm giỏ hàng mới, trả về cartID mới được tạo
+    public int insertCart(Cart cart) throws Exception {
+        String sql = "INSERT INTO tblCarts (userID, createdDate) VALUES (?, ?)";
+        try ( Connection con = DBUtils.getConnection();  PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, cart.getUserID());
+            ps.setDate(2, Date.valueOf(cart.getCreatedDate()));
+            ps.executeUpdate();
+
+            try ( ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1); // Trả về cartID vừa tạo
                 }
             }
-            String insertSql = "INSERT INTO tblCarts (userID, createdDate) VALUES (?, ?)";
-            try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(insertSql)) {
-                ps.setString(1, userID);
-                ps.setString(2, createdDate);
-                return ps.executeUpdate() > 0;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
-        return false;
+        return -1;
     }
 
-    public boolean deleteCart(String id) throws Exception {
-        String sql = "DELETE FROM tblCarts WHERE userID = ?";
-        boolean isDeleted = false;
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql);) {
-            ps.setString(1, id);
-            isDeleted = ps.executeUpdate() > 0;
-        }
-        return isDeleted;
-    }
-
-    public ArrayList<Cart> search(String search) throws SQLException {
-        ArrayList<Cart> list = new ArrayList<>();
-        String sql = "SELECT * FROM tblCarts WHERE userID LIKE ?";
-        ResultSet rs = null;
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            if (conn != null) {
-                ps.setString(1, '%' + search + '%');
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    String userID = rs.getString("userID");
-                    String createdDate = rs.getString("createdDate");
-                    list.add(new Cart(userID, createdDate));
-                }
-            }
-        } catch (Exception e) {
-        } finally {
-            if (rs != null) {
-                rs.close();
-            }
-        }
-        return list;
-    }
-
-    public Cart getCartById(String id) throws SQLException {
+    // Lấy giỏ hàng theo userID
+    public Cart getCartByUserID(String userID) throws Exception {
         String sql = "SELECT * FROM tblCarts WHERE userID = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, id);
+        try ( Connection con = DBUtils.getConnection();  PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, userID);
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Cart(rs.getString("userID"), rs.getString("createdDate"));
+                    int cartID = rs.getInt("cartID");
+                    LocalDate createdDate = rs.getDate("createdDate").toLocalDate();
+
+                    // Lấy danh sách sản phẩm trong giỏ
+                    CartDetailDAO detailDAO = new CartDetailDAO();
+                    List<CartDetail> details = detailDAO.getCartDetails(cartID);
+
+                    return new Cart(cartID, userID, createdDate, details);
                 }
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return null;
     }
 
-    public int getCurrentCartID(String userID) throws SQLException {
-        String sql = "SELECT TOP 1 cartID FROM tblCarts WHERE userID = ? ORDER BY createdDate DESC";
-
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, userID);
-            try ( ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("cartID");
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+    public List<CartDetail> viewCart(String userID) throws Exception {
+        Cart cart = getCartByUserID(userID);
+        if (cart != null) {
+            CartDetailDAO detailDAO = new CartDetailDAO();
+            return detailDAO.getCartDetails(cart.getCartID());
         }
-        return -1; // Không tìm thấy cart
+        return new ArrayList<>();
     }
 
-    public boolean updateCart(String userID, String createdDate) throws Exception {
-        String sql = "UPDATE tblCarts SET createdDate = ? WHERE userID = ?";
-        try ( Connection conn = DBUtils.getConnection();  PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, createdDate); // createdDate đặt trước
-            stmt.setString(2, userID);         // cartID đặt sau
-            return stmt.executeUpdate() > 0;
+    public List<CartDetail> searchCart(String userID, String nameSearch, String cateSearch, Double maxPrice) throws Exception {
+        List<CartDetail> result = new ArrayList<>();
+
+        String sql = "SELECT cd.cartID, cd.productID, cd.quantity, p.name, p.price, c.categoryName "
+                + "FROM tblCartDetails cd "
+                + "JOIN tblProducts p ON cd.productID = p.productID "
+                + "JOIN tblCategories c ON p.categoryID = c.categoryID "
+                + "JOIN tblCarts cart ON cd.cartID = cart.cartID "
+                + "WHERE cart.userID = ? ";
+
+        if (nameSearch != null && !nameSearch.trim().isEmpty()) {
+            sql += "AND p.name LIKE ? ";
         }
+        if (cateSearch != null && !cateSearch.trim().isEmpty()) {
+            sql += "AND c.categoryName = ? ";
+        }
+        if (maxPrice != null) {
+            sql += "AND p.price <= ? ";
+        }
+
+        try ( Connection con = DBUtils.getConnection();  PreparedStatement ps = con.prepareStatement(sql)) {
+
+            int index = 1;
+            ps.setString(index++, userID);
+
+            if (nameSearch != null && !nameSearch.trim().isEmpty()) {
+                ps.setString(index++, "%" + nameSearch + "%");
+            }
+            if (cateSearch != null && !cateSearch.trim().isEmpty()) {
+                ps.setString(index++, cateSearch);
+            }
+            if (maxPrice != null) {
+                ps.setDouble(index++, maxPrice);
+            }
+
+            try ( ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int cartID = rs.getInt("cartID");
+                    int productID = rs.getInt("productID");
+                    String name = rs.getString("name");
+                    float price = rs.getFloat("price");
+                    int quantity = rs.getInt("quantity");
+                    String cateName = rs.getString("categoryName");
+
+                    Product product = new Product(productID, name, price, cateName);
+                    CartDetail detail = new CartDetail(cartID, product, quantity);
+                    result.add(detail);
+                }
+            }
+        }
+        return result;
     }
 }

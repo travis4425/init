@@ -25,9 +25,9 @@ public class SearchUserController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         
-        String userID = request.getParameter("userID");
-        String fullName = request.getParameter("fullName");
-        String roleID = request.getParameter("roleID");
+        String userID = request.getParameter("SearchUserID");
+        String fullName = request.getParameter("SearchFullName");
+        String roleID = request.getParameter("SearchRoleID");
         
         try {
             UserDAO dao = new UserDAO();
@@ -35,9 +35,8 @@ public class SearchUserController extends HttpServlet {
             request.setAttribute("listUser", list);
         } catch (Exception e) {
             log("Error at SearchUserController: " + e.toString());
-        } finally {
-            request.getRequestDispatcher("userList.jsp").forward(request, response);
         }
+        request.getRequestDispatcher("user/userList.jsp").forward(request, response);
     } 
 
     @Override

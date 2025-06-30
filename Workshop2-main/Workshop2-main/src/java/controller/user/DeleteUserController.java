@@ -23,15 +23,15 @@ public class DeleteUserController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String userID = request.getParameter("userID");
-        String search = request.getParameter("search");
         try {
             UserDAO dao = new UserDAO();
             dao.delete(userID);
+            request.setAttribute("MSG", "User Deleted Successfully!");
         } catch (Exception e) {
             log("Error at DeleteUserController: " + e.toString());
-        } finally {
-            response.sendRedirect("MainController?action=SearchUser&search=" + search);
-        }
+            request.setAttribute("MSG", "User Deleted Failed!");
+        } 
+        request.getRequestDispatcher("SearchUserController").forward(request, response);
     } 
 
     @Override

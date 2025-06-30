@@ -28,7 +28,7 @@ public class GetUserController extends HttpServlet {
             UserDAO dao = new UserDAO();
             User user = dao.getUserByID(userID);
             request.setAttribute("user", user);
-            request.getRequestDispatcher("userUpdate.jsp").forward(request, response);
+            request.getRequestDispatcher("user/userUpdate.jsp").forward(request, response);
         } catch (Exception e) {
             log("Error at GetUserController: " + e.toString());
         }

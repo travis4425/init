@@ -6,23 +6,44 @@
 package dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 public class Invoice {
-    
-    private String userID;
-    private String status;
+    private int invoiceID;
+    private String userID, status;
     private float totalAmount;
     private LocalDate createdDate;
+    private List<InvoiceDetail> invoiceDetails;
+    private boolean returned;
+    
+    public Invoice() {}
 
-    public Invoice(String userID, String status, float totalAmount, LocalDate createdDate) {
+    public Invoice(int invoiceID, String userID, String status, float totalAmount, LocalDate createdDate) {
+        this.invoiceID = invoiceID;
         this.userID = userID;
         this.status = status;
         this.totalAmount = totalAmount;
         this.createdDate = createdDate;
     }
+    
+    public boolean isReturned() { return returned; }
+    public void setReturned(boolean returned) { this.returned = returned; }
 
-    public Invoice() {
+    public List<InvoiceDetail> getInvoiceDetails() {
+        return invoiceDetails;
+    }
+
+    public void setInvoiceDetails(List<InvoiceDetail> invoiceDetails) {
+        this.invoiceDetails = invoiceDetails;
+    }
+
+    public int getInvoiceID() {
+        return invoiceID;
+    }
+
+    public void setInvoiceID(int invoiceID) {
+        this.invoiceID = invoiceID;
     }
 
     public String getUserID() {
@@ -56,5 +77,6 @@ public class Invoice {
     public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
+    
     
 }

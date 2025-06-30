@@ -1,19 +1,44 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package dto;
 
-/**
- * Cart DTO - Represents a cart item for display in JSP
- */
-public class Cart {
+import java.time.LocalDate;
+import java.util.List;
 
+
+public class Cart {
+    private int cartID;
     private String userID;
-    private String createdDate;
+    private LocalDate createdDate;
+    private List<CartDetail> cartDetails;
 
     public Cart() {
     }
-
-    public Cart(String userID, String createdDate) {
+    
+    public Cart(int cartID, String userID, LocalDate createdDate, List<CartDetail> cartDetails) {
+        this.cartID = cartID;
         this.userID = userID;
         this.createdDate = createdDate;
+        this.cartDetails = cartDetails;
+    }
+
+    public List<CartDetail> getCartDetails() {
+        return cartDetails;
+    }
+
+    public void setCartDetails(List<CartDetail> cartDetails) {
+        this.cartDetails = cartDetails;
+    }
+
+    public int getCartID() {
+        return cartID;
+    }
+
+    public void setCartID(int cartID) {
+        this.cartID = cartID;
     }
 
     public String getUserID() {
@@ -24,14 +49,13 @@ public class Cart {
         this.userID = userID;
     }
 
-    public String getCreatedDate() {
+    public LocalDate getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(LocalDate createdDate) {
         this.createdDate = createdDate;
     }
-
     
-
+    
 }

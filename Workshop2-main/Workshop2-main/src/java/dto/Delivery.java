@@ -5,21 +5,26 @@
 
 package dto;
 
+import java.sql.Date;
 import java.time.LocalDate;
 
 
 public class Delivery {
-    private int deliveryID, invoiceID;
-    private String address, status;
+    private int deliveryID;
+    private int invoiceID;
+    private String address;
     private LocalDate deliveryDate;
+    private String status;
 
-    public Delivery(int deliveryID, int invoiceID, String address, String status, LocalDate deliveryDate) {
+    public Delivery(int deliveryID, int invoiceID, String address, LocalDate deliveryDate, String status) {
         this.deliveryID = deliveryID;
         this.invoiceID = invoiceID;
         this.address = address;
-        this.status = status;
         this.deliveryDate = deliveryDate;
+        this.status = status;
     }
+    
+    public Delivery() {}
 
     public int getDeliveryID() {
         return deliveryID;
@@ -45,20 +50,20 @@ public class Delivery {
         this.address = address;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public LocalDate getDeliveryDate() {
         return deliveryDate;
     }
 
     public void setDeliveryDate(LocalDate deliveryDate) {
         this.deliveryDate = deliveryDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
     

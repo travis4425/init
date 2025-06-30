@@ -52,7 +52,7 @@ public class RegisterController extends HttpServlet {
             }
         } catch (Exception e) {
             log("Error at RegisterUserController: " + e.toString());
-            request.setAttribute("MSG", "An error occurred, please try again.");
+            request.setAttribute("MSG", "Register failed: UserID already exists.");
         }
         // Nếu thất bại, show lại form với message
         request.getRequestDispatcher("register.jsp").forward(request, response);
