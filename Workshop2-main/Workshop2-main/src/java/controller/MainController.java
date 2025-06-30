@@ -205,7 +205,7 @@ public class MainController extends HttpServlet {
             } else if (SEARCH_DELIVERY.equals(action)) {
                 url = SEARCH_DELIVERY_CONTROLLER;
             } else if (INVENTORY.equals(action)) {
-                url = "inventory.jsp";
+                url = INVENTORY_CONTROLLER;
             } else if (CREATE_INVENTORY.equals(action)) {
                 url = CREATE_INVENTORY_CONTROLLER;
             } else if (UPDATE_INVENTORY.equals(action)) {

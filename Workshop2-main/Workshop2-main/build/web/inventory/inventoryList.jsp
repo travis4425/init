@@ -51,7 +51,7 @@
                     <a href="MainController?action=ViewReturn">Return</a>
                     <a href="PromotionController">Promotion</a>
                     <a href="MainController?action=CustomerCare">Customer Care</a>
-                    <a href="MainController?action=SearchInventoryController">Inventory</a>
+                    <a href="MainController?action=Inventory">Inventory</a>
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
                         <a href="MainController?action=SearchUser">User Management</a>
                     </c:if>
