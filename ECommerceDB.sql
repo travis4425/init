@@ -1,105 +1,182 @@
-﻿USE master;
+﻿CREATE DATABASE ECommerceDB;
 GO
-
-IF EXISTS (SELECT name FROM sys.databases WHERE name = 'ECommerceDB')
-BEGIN
-    ALTER DATABASE ECommerceDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-    DROP DATABASE ECommerceDB;
-END
-GO
-
-CREATE DATABASE ECommerceDB;
-GO
-
 USE ECommerceDB;
 GO
 
--- =============================================
--- TẠO BẢNG
--- =============================================
+-- 1. Bảng người dùng
+CREATE TABLE tblUsers (
+    userID VARCHAR(20) PRIMARY KEY,
+    fullName NVARCHAR(100),
+    roleID VARCHAR(5),
+    password NVARCHAR(100),
+    phone VARCHAR(15)
+);
+GO
+
+-- 4. Chương trình khuyến mãi
+CREATE TABLE tblPromotions (
+    promoID INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(100),
+    discountPercent FLOAT,
+    startDate DATE,
+    endDate DATE,
+    status VARCHAR(20)
+);
+GO
+
+-- 2. Ngành hàng
+CREATE TABLE tblCategories (
+    categoryID INT PRIMARY KEY IDENTITY(1,1),
+    categoryName NVARCHAR(100),
+    description NVARCHAR(255),
+	promoID INT,
+	FOREIGN KEY (promoID) REFERENCES tblPromotions(promoID)
+);
+GO
+
+-- 3. Sản phẩm
+CREATE TABLE tblProducts (
+    productID INT PRIMARY KEY IDENTITY(1,1),
+    name NVARCHAR(100),
+    categoryID INT,
+    price FLOAT,
+	originalPrice FLOAT,
+    quantity INT,
+    sellerID VARCHAR(20),
+	promoID INT,
+    status VARCHAR(20),
+	FOREIGN KEY (promoID) REFERENCES tblPromotions(promoID),
+    FOREIGN KEY (categoryID) REFERENCES tblCategories(categoryID),
+    FOREIGN KEY (sellerID) REFERENCES tblUsers(userID)
+);
+GO
+
+-- 5. Giỏ hàng
+CREATE TABLE tblCarts (
+    cartID INT PRIMARY KEY IDENTITY(1,1),
+    userID VARCHAR(20),
+    createdDate DATE,
+    FOREIGN KEY (userID) REFERENCES tblUsers(userID)
+);
+GO
+
+CREATE TABLE tblCartDetails (
+    cartID INT,
+    productID INT,
+    quantity INT,
+    PRIMARY KEY (cartID, productID),
+    FOREIGN KEY (cartID) REFERENCES tblCarts(cartID),
+    FOREIGN KEY (productID) REFERENCES tblProducts(productID)
+);
+GO
+
+-- 6. Hóa đơn
+CREATE TABLE tblInvoices (
+    invoiceID INT PRIMARY KEY IDENTITY(1,1),
+    userID VARCHAR(20),
+    totalAmount FLOAT,
+    status VARCHAR(20),
+    createdDate DATE,
+    FOREIGN KEY (userID) REFERENCES tblUsers(userID)
+);
+GO
+
+CREATE TABLE tblInvoiceDetails (
+    invoiceID INT,
+    productID INT,
+    quantity INT,
+    price FLOAT,
+    PRIMARY KEY (invoiceID, productID),
+    FOREIGN KEY (invoiceID) REFERENCES tblInvoices(invoiceID),
+    FOREIGN KEY (productID) REFERENCES tblProducts(productID)
+);
+GO
+
+-- 7. Giao hàng
+CREATE TABLE tblDeliveries (
+    deliveryID INT PRIMARY KEY IDENTITY(1,1),
+    invoiceID INT,
+    address NVARCHAR(255),
+    deliveryDate DATE,
+    status VARCHAR(50),
+    FOREIGN KEY (invoiceID) REFERENCES tblInvoices(invoiceID)
+);
+GO
+
+-- 8. Trả hàng
+CREATE TABLE tblReturns (
+    returnID INT PRIMARY KEY IDENTITY(1,1),
+    invoiceID INT,
+    reason NVARCHAR(255),
+    status VARCHAR(50),
+    FOREIGN KEY (invoiceID) REFERENCES tblInvoices(invoiceID)
+);
+GO
+
+-- 9. Chăm sóc khách hàng
+CREATE TABLE tblCustomerCares (
+    ticketID INT PRIMARY KEY IDENTITY(1,1),
+    userID VARCHAR(20),
+    subject NVARCHAR(100),
+    content NVARCHAR(100),
+    status NVARCHAR(50),
+    reply NVARCHAR(100),
+    FOREIGN KEY (userID) REFERENCES tblUsers(userID)
+);
+GO
+
+-- Tạo bảng kho hàng
+CREATE TABLE tblInventories (
+    inventoryID INT IDENTITY(1,1) PRIMARY KEY,
+    warehouseID INT,
+    productID INT,
+    stockQuantity INT,
+    FOREIGN KEY (productID) REFERENCES tblProducts(productID)
+);
+GO
 
 -- 1. tblUsers
-CREATE TABLE tblUsers (
-    userID VARCHAR(50) PRIMARY KEY,
-    password VARCHAR(100) NOT NULL,
-    fullName NVARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    phone VARCHAR(20),
-    address NVARCHAR(200),
-    roleID VARCHAR(2) NOT NULL DEFAULT 'BU', -- AD, SE, BU, MK, AC, DL, CS
-    status BIT DEFAULT 1, -- 1: Active, 0: Inactive
-    createdDate DATE DEFAULT GETDATE(),
-    lastLogin DATETIME,
-    
-    -- Constraints
-    CONSTRAINT CK_Users_Role CHECK (roleID IN ('AD', 'SE', 'BU', 'MK', 'AC', 'DL', 'CS')),
-    CONSTRAINT CK_Users_Email CHECK (email LIKE '%@%.%')
-);
+INSERT INTO tblUsers (userID, fullName, roleID, password, phone) VALUES
+('ltk', N'Lương Tuấn Kiệt', 'AD', '1', '0888819044'),
+('seller01', N'Trần Thị B', 'SE', 'abc123', '0909123456'),
+('na', N'Nguyễn Phạm Nhật Anh', 'SE', '1', '0359925825'),
+('bu', N'Buyer Nguyễn', 'BU', '1', '0909123456'),
+('dl', N'Deliver Trần', 'DL', '1', '0909123456'),
+('mk', N'Market Lê', 'MK', '1', '0909123456'),
+('cs', N'Cuscare Phạm', 'CS', '1', '0909123456');
 
-GO
 
 -- 2. tblCategories
-CREATE TABLE tblCategories (
-    categoryID INT IDENTITY(1,1) PRIMARY KEY,
-    categoryName NVARCHAR(100) NOT NULL UNIQUE,
-    description NVARCHAR(500),
-    parentCategoryID INT NULL,
-    status BIT DEFAULT 1,
-    createdDate DATE DEFAULT GETDATE(),
-    CONSTRAINT FK_Categories_Parent FOREIGN KEY (parentCategoryID) REFERENCES tblCategories(categoryID)
-);
-GO
-
--- 3. tblProducts
-CREATE TABLE tblProducts (
-    productID INT IDENTITY(1,1) PRIMARY KEY,
-    productName NVARCHAR(200) NOT NULL,
-    description NVARCHAR(1000),
-    price DECIMAL(18,2) NOT NULL,
-    quantity INT NOT NULL DEFAULT 0,
-    categoryID INT NOT NULL,
-    sellerID VARCHAR(50) NOT NULL,
-    image VARCHAR(200),
-    status BIT DEFAULT 1,
-    createdDate DATE DEFAULT GETDATE(),
-    modifiedDate DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_Products_Category FOREIGN KEY (categoryID) REFERENCES tblCategories(categoryID),
-    CONSTRAINT FK_Products_Seller FOREIGN KEY (sellerID) REFERENCES tblUsers(userID),
-    CONSTRAINT CK_Products_Price CHECK (price >= 0),
-    CONSTRAINT CK_Products_Quantity CHECK (quantity >= 0)
-);
-GO
-
--- (Tiếp tục với các bảng còn lại từ `tblPromotions` đến `tblCustomerCares` như trong script gốc...)
--- Vì lý do giới hạn ký tự, bạn có muốn mình gửi từng **file chia nhỏ** phần còn lại không?
-
----
-
-
-
--- Insert sample users
--- Insert sample users
-INSERT INTO tblUsers (userID, password, fullName, email, phone, address, roleID) VALUES
-('admin', '12345', N'Quản trị viên', 'admin@shop.com', '0901234567', N'Hà Nội', 'AD'),
-('seller1', '1', N'Nguyễn Văn A', 'seller1@shop.com', '0901234568', N'TP.HCM', 'SE'),
-('buyer1', '1', N'Trần Thị B', 'buyer1@gmail.com', '0901234569', N'Đà Nẵng', 'BU'),
-('buyer2', '1', N'Lê Văn C', 'buyer2@gmail.com', '0901234570', N'Hải Phòng', 'BU');
-GO
-
--- Insert sample categories
 INSERT INTO tblCategories (categoryName, description) VALUES
-(N'Điện thoại & Phụ kiện', N'Điện thoại thông minh và phụ kiện'),
-(N'Laptop & Máy tính', N'Laptop, PC và linh kiện máy tính'),
-(N'Thời trang Nam', N'Quần áo, giày dép nam'),
-(N'Thời trang Nữ', N'Quần áo, giày dép nữ'),
-(N'Gia dụng & Đời sống', N'Đồ gia dụng, nội thất');
-GO
+(N'Điện thoại', N'Smartphone chính hãng'),
+(N'Máy tính', N'Laptop, PC và linh kiện'),
+(N'Gia dụng', N'Thiết bị sử dụng trong gia đình');
 
--- Insert sample products
-INSERT INTO tblProducts (productName, description, price, quantity, categoryID, sellerID, image) VALUES
-(N'iPhone 14 Pro Max', N'Điện thoại iPhone 14 Pro Max 128GB', 25000000, 50, 1, 'seller1', 'iphone14.jpg'),
-(N'Samsung Galaxy S23', N'Điện thoại Samsung Galaxy S23 256GB', 18000000, 30, 1, 'seller1', 'galaxys23.jpg'),
-(N'MacBook Pro M2', N'MacBook Pro 13 inch với chip M2', 35000000, 20, 2, 'seller1', 'macbook.jpg'),
-(N'Dell XPS 13', N'Laptop Dell XPS 13 thế hệ mới', 28000000, 15, 2, 'seller1', 'dellxps.jpg'),
-(N'Áo sơ mi nam', N'Áo sơ mi nam công sở cao cấp', 350000, 100, 3, 'seller1', 'aosomi.jpg');
-GO
+-- 3. tblPromotions
+INSERT INTO tblPromotions (name, discountPercent, startDate, endDate, status) VALUES
+(N'Summer Sale', 10.0, '2025-06-01', '2025-06-30', N'Active'),
+(N'Back to School', 5.0, '2025-07-01', '2025-07-15', N'Active');
+
+-- 4. tblProducts
+INSERT INTO tblProducts (name, categoryID, price, originalPrice, quantity, sellerID, status, promoID) VALUES
+(N'iPhone 15 Pro', 1, 289, 289, 20, 'seller01', N'Active', 1),
+(N'Dell XPS 13', 2, 279, 279, 10, 'na', N'Active', 1),
+(N'Nồi chiên không dầu', 3, 199, 199, 30, 'seller01', N'Inactive', NULL);
+
+
+-- Thêm dữ liệu tồn kho
+INSERT INTO tblInventories (warehouseID, productID, stockQuantity) VALUES
+(1, 1, 6),
+(1, 2, 5);
+
+
+
+
+
+
+
+
+
+
+
+
