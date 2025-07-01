@@ -64,47 +64,52 @@
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a href="MainController?action=ViewProducts">Product</a>
+                          <a href="MainController?action=ViewProducts">Product</a>
                     </c:if>
                     <!-- category -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a href="MainController?action=ViewCategories">Category</a>
+                          <a href="MainController?action=ViewCategories">Category</a>
                     </c:if>   
                     <!-- cart -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewCart">Cart</a>
+                          <a href="MainController?action=ViewCart">Cart</a>
                     </c:if>
                     <!-- invoice -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'AC'}">
-                        <a href="MainController?action=ViewInvoice">Invoice</a>
+                          <a href="MainController?action=ViewInvoice">Invoice</a>
                     </c:if>
                     <!-- delivery -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'DL'}">
-                        <a href="MainController?action=ViewDelivery">Delivery</a>   
+                          <a href="MainController?action=ViewDelivery">Delivery</a>   
                     </c:if>
                     <!-- return -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewReturn">Return</a>  
+                          <a href="MainController?action=ViewReturn">Return</a>  
                     </c:if>
                     <!-- promotion -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK' ||
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="PromotionController">Promotion</a>
+                          <a href="PromotionController">Promotion</a>
                     </c:if>
                     <!-- customer care -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'CS'}">
-                        <a href="MainController?action=CustomerCare">Customer Care</a>
+                          <a href="MainController?action=CustomerCare">Customer Care</a>
+                    </c:if>
+                    <!-- inventory management -->      
+                    <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
+                                  sessionScope.LOGIN_USER.roleID eq 'CS'}">
+                          <a href="MainController?action=Inventory">Inventory Management</a>
                     </c:if>
                     <!-- user -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
@@ -128,25 +133,25 @@
                                 <a href="MainController?action=ViewProducts" class="btn btn-light btn-lg mx-2">View Products</a>
                                 <a href="MainController?action=ViewCategories" class="btn btn-outline-light btn-lg mx-2">View Categories</a>
                             </c:if>
-                                
+
                             <c:if test="${sessionScope.LOGIN_USER.roleID eq 'SE'}">
                                 <a href="MainController?action=ViewProducts" class="btn btn-light btn-lg mx-2">My Products</a>
                             </c:if>
-                                
+
                             <c:if test="${sessionScope.LOGIN_USER.roleID eq 'BU'}">
                                 <a href="MainController?action=ViewProducts" class="btn btn-light btn-lg mx-2">View Products</a>
                                 <a href="MainController?action=ViewCategories" class="btn btn-outline-light btn-lg mx-2">View Categories</a>
                             </c:if>
-                                
+
                             <c:if test="${sessionScope.LOGIN_USER.roleID eq 'MK'}">
                                 <a href="MainController?action=ViewProducts" class="btn btn-light btn-lg mx-2">View Products</a>
                                 <a href="PromotionController" class="btn btn-outline-light btn-lg mx-2">View Promotions</a>
                             </c:if>
-                                
+
                             <c:if test="${sessionScope.LOGIN_USER.roleID eq 'CS'}">
                                 <a href="MainController?action=CustomerCare" class="btn btn-light btn-lg mx-2">View Requests</a>
                             </c:if>
-                                
+
                             <c:if test="${sessionScope.LOGIN_USER.roleID eq 'DL'}">
                                 <a href="MainController?action=ViewDelivery" class="btn btn-light btn-lg mx-2">View Delivery</a>
                             </c:if>    

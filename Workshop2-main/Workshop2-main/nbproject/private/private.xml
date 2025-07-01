@@ -2,6 +2,16 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/inventory/UpdateInventoryController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/web/category/categoryList.jsp</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/MainController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/web/inventory/inventoryList.jsp</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/web/delivery/deliveryList.jsp</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/inventory/CreateInventoryController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/dao/InventoryDAO.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/inventory/SearchInventoryController.java</file>
+            <file>file:/C:/Máy%20tính/PRJ301/Workshop2/init/Workshop2-main/Workshop2-main/src/java/controller/inventory/DeleteInventoryController.java</file>
+        </group>
     </open-files>
 </project-private>

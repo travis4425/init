@@ -130,7 +130,7 @@ CREATE TABLE tblInventories (
     inventoryID INT IDENTITY(1,1) PRIMARY KEY,
     warehouseID INT,
     productID INT,
-    stockQuantity INT,
+    stockQuantity FLOAT,
     FOREIGN KEY (productID) REFERENCES tblProducts(productID)
 );
 GO

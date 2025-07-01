@@ -40,9 +40,9 @@
     <body>
         <c:if test="${empty sessionScope.LOGIN_USER || 
                       (sessionScope.LOGIN_USER.roleID ne 'AD' && 
-                       sessionScope.LOGIN_USER.roleID ne 'SE' && 
-                       sessionScope.LOGIN_USER.roleID ne 'MK' && 
-                       sessionScope.LOGIN_USER.roleID ne 'BU')}">
+                      sessionScope.LOGIN_USER.roleID ne 'SE' && 
+                      sessionScope.LOGIN_USER.roleID ne 'MK' && 
+                      sessionScope.LOGIN_USER.roleID ne 'BU')}">
             <c:redirect url="login.jsp"></c:redirect>
         </c:if>
 
@@ -57,47 +57,52 @@
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a class="active" href="MainController?action=ViewProducts">Product</a>
+                          <a class="active" href="MainController?action=ViewProducts">Product</a>
                     </c:if>
                     <!-- category -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a href="MainController?action=ViewCategories">Category</a>
+                          <a href="MainController?action=ViewCategories">Category</a>
                     </c:if>   
                     <!-- cart -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewCart">Cart</a>
+                          <a href="MainController?action=ViewCart">Cart</a>
                     </c:if>
                     <!-- invoice -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'AC'}">
-                        <a href="MainController?action=ViewInvoice">Invoice</a>
+                          <a href="MainController?action=ViewInvoice">Invoice</a>
                     </c:if>
                     <!-- delivery -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'DL'}">
-                        <a href="MainController?action=ViewDelivery">Delivery</a>   
+                          <a href="MainController?action=ViewDelivery">Delivery</a>   
                     </c:if>
                     <!-- return -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewReturn">Return</a>  
+                          <a href="MainController?action=ViewReturn">Return</a>  
                     </c:if>
                     <!-- promotion -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK' ||
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="PromotionController">Promotion</a>
+                          <a href="PromotionController">Promotion</a>
                     </c:if>
                     <!-- customer care -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'CS'}">
-                        <a href="MainController?action=CustomerCare">Customer Care</a>
+                          <a href="MainController?action=CustomerCare">Customer Care</a>
+                    </c:if>
+                    <!-- inventory management -->      
+                    <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
+                                  sessionScope.LOGIN_USER.roleID eq 'CS'}">
+                          <a href="MainController?action=Inventory">Inventory Management</a>
                     </c:if>
                     <!-- user -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
@@ -139,18 +144,18 @@
                                         </c:forEach>
                                     </select>
                                 </div>
-                                
+
                                 <div class="col-md-3">
                                     <input type="number" class="form-control" name="priceSearch" placeholder="Price" value="${requestScope.priceSearch}"> 
                                 </div>
-                                
-<!--                                <div class="col-md-3">
-                                    <select class="form-select" name="statusSearch">
-                                        <option value="" ${empty param.SearchStatus ? "selected" : ""}>Any Status</option>
-                                        <option value="Active" ${param.SearchStatus eq 'Active' ? "selected" : ""}>Active</option>
-                                        <option value="Inactive" ${param.SearchStatus eq 'Inactive' ? "selected" : ""}>Inactive</option>
-                                    </select>
-                                </div>-->
+
+                                <!--                                <div class="col-md-3">
+                                                                    <select class="form-select" name="statusSearch">
+                                                                        <option value="" ${empty param.SearchStatus ? "selected" : ""}>Any Status</option>
+                                                                        <option value="Active" ${param.SearchStatus eq 'Active' ? "selected" : ""}>Active</option>
+                                                                        <option value="Inactive" ${param.SearchStatus eq 'Inactive' ? "selected" : ""}>Inactive</option>
+                                                                    </select>
+                                                                </div>-->
                                 <div class="col-md-3">
                                     <button type="submit" name="action" value="ViewProducts" class="btn btn-primary w-100">Search</button>
                                 </div>
@@ -166,7 +171,7 @@
                             </button>
                         </div>
                     </c:if>
-                    
+
 
                     <!-- Create Form -->
                     <div class="collapse mb-4" id="createProductForm">
@@ -225,15 +230,15 @@
                                         <th>Category</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
-                                        <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD' || sessionScope.LOGIN_USER.roleID == 'BU'}">
+                                            <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD' || sessionScope.LOGIN_USER.roleID == 'BU'}">
                                             <th>Seller</th>
-                                        </c:if>
-                                        <c:if test="${sessionScope.LOGIN_USER.roleID == 'SE' || sessionScope.LOGIN_USER.roleID == 'BU'}">
+                                            </c:if>
+                                            <c:if test="${sessionScope.LOGIN_USER.roleID == 'SE' || sessionScope.LOGIN_USER.roleID == 'BU'}">
                                             <th>Function</th>
-                                        </c:if>
-                                        <c:if test="${sessionScope.LOGIN_USER.roleID == 'MK'}">
+                                            </c:if>
+                                            <c:if test="${sessionScope.LOGIN_USER.roleID == 'MK'}">
                                             <th>Promotion</th>
-                                        </c:if>
+                                            </c:if>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -247,7 +252,7 @@
                                             <c:if test="${sessionScope.LOGIN_USER.roleID == 'AD' || sessionScope.LOGIN_USER.roleID == 'BU'}">
                                                 <td><c:out value="${not empty product.sellerFullName ? product.sellerFullName : 'Unknown'}"/></td>
                                             </c:if>
-                                                
+
                                             <c:if test="${sessionScope.LOGIN_USER.roleID == 'SE'}">
                                                 <td>
                                                     <div class="d-flex gap-2">
@@ -255,8 +260,8 @@
                                                             <input type="hidden" name="id" value="${product.productID}">
                                                             <button type="submit" name="action" value="UpdateProduct" class="btn btn-warning btn-sm">Update</button>
                                                         </form>
-                                                        <form action="MainController" method="POST" onsubmit="return confirm('Are you sure to delete this product?')>
-                                                            <input type="hidden" name="id" value="${product.productID}">
+                                                        <form action="MainController" method="POST" onsubmit="return confirm('Are you sure to delete this product?') >
+                                                                    <input type="hidden" name="id" value="${product.productID}">
                                                             <button class="btn btn-danger btn-sm" type="submit" name="action" value="DeleteProduct">Delete</button>
                                                         </form>
                                                     </div>
@@ -276,40 +281,41 @@
                                                 <td>
                                                     <form action="MainController" method="POST" id="promoForm-${product.productID}">
                                                         <input type="hidden" name="productID" value="${product.productID}">
-                                                        <select class="form-select form-select-sm" name="promoID" onchange="if(confirm('Apply this promotion?')) this.form.submit()">
-                                                            <option value="0" ${empty product.promoID ? 'selected' : ''}>None</option>
-                                                            <c:forEach var="promo" items="${requestScope.PROMOTION_LIST}">
-                                                                <option value="${promo.promoID}" ${product.promoID == promo.promoID ? 'selected' : ''}>
-                                                                    ${promo.name} (${promo.discountPercent}%)
-                                                                </option>
-                                                            </c:forEach>
-                                                        </select>
-                                                        <input type="hidden" name="action" value="ApplyPromotion">
-                                                    </form>
-                                                </td>
-                                            </c:if>
-                                        </tr>
-                                    </c:forEach>
-                                </tbody>
-                            </table>
-                        </div>
-                    </c:if>
-                </div>
-            </div>
-        </div>
+                                                            <select class="form-select form-select-sm" name="promoID" onchange="if (confirm('Apply this promotion?')) this.form.submit()">
+                                                                <option value="0" ${empty product.promoID ? 'selected' : ''}>None</option>
+                                                                <c:forEach var="promo" items="${requestScope.PROMOTION_LIST}">
+                                                                    <option value="${promo.promoID}" ${product.promoID == promo.promoID ? 'selected' : ''}>
+                                                                        ${promo.name} (${promo.discountPercent}%)
+                                                                    </option>
+                                                                </c:forEach>
+                                                            </select>
+                                                            <input type="hidden" name="action" value="ApplyPromotion">
+                                                            </form>
+                                                            </td>
+                                                        </c:if>
+                                                        </tr>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                    </table>
+                                                    </div>
+                                                </c:if>
+                                                </div>
+                                                </div>
+                                                </div>
 
-        <!-- Bootstrap JS -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            window.addEventListener("DOMContentLoaded", () => {
-                const msg = document.getElementById("msg");
-                if (msg) {
-                    setTimeout(() => {
-                        msg.classList.remove("show"); // mờ dần
-                        setTimeout(() => msg.remove(), 500); // xóa khỏi DOM
-                    }, 3000);
+                                                <!-- Bootstrap JS -->
+                                                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+                                                <script>
+        window.                                        ad                                                    dEventListener("DOMContentLoaded", () => 
+{
+                                                                const msg = document.ge                                                        tElementById("msg");
+            if                                                            (msg) {
+                setTimeout(() => {
+                                                                            msg.classList.remove("show"); // mờ dần
+                    setTimeou                                                        t(() => msg.remove(), 500)                                                        ; // xóa khỏi DOM
+                                                        }, 3                                                    000);
                 }
-            });
-        </script>
+                                                      });
+                </script>
     </body>
 </html>

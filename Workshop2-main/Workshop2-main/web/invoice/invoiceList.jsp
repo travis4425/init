@@ -52,47 +52,52 @@
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a href="MainController?action=ViewProducts">Product</a>
+                          <a href="MainController?action=ViewProducts">Product</a>
                     </c:if>
                     <!-- category -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a href="MainController?action=ViewCategories">Category</a>
+                          <a href="MainController?action=ViewCategories">Category</a>
                     </c:if>   
                     <!-- cart -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewCart">Cart</a>
+                          <a href="MainController?action=ViewCart">Cart</a>
                     </c:if>
                     <!-- invoice -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'AC'}">
-                        <a class="active" href="MainController?action=ViewInvoice">Invoice</a>
+                          <a class="active" href="MainController?action=ViewInvoice">Invoice</a>
                     </c:if>
                     <!-- delivery -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'DL'}">
-                        <a href="MainController?action=ViewDelivery">Delivery</a>   
+                          <a href="MainController?action=ViewDelivery">Delivery</a>   
                     </c:if>
                     <!-- return -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewReturn">Return</a>  
+                          <a href="MainController?action=ViewReturn">Return</a>  
                     </c:if>
                     <!-- promotion -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK' ||
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="PromotionController">Promotion</a>
+                          <a href="PromotionController">Promotion</a>
                     </c:if>
                     <!-- customer care -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'CS'}">
-                        <a href="MainController?action=CustomerCare">Customer Care</a>
+                          <a href="MainController?action=CustomerCare">Customer Care</a>
+                    </c:if>
+                    <!-- inventory management -->      
+                    <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
+                                  sessionScope.LOGIN_USER.roleID eq 'CS'}">
+                          <a href="MainController?action=Inventory">Inventory Management</a>
                     </c:if>
                     <!-- user -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
@@ -114,7 +119,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                     </c:if>
-                    
+
                     <!-- Search Invoice -->
                     <div class="card mb-4">
                         <div class="card-header bg-light">
@@ -160,78 +165,78 @@
                                         invoice.status eq 'Canceled' ? 'bg-danger' : 
                                         invoice.status eq 'Processing' ? 'bg-warning text-dark' : 
                                         'bg-secondary'}">
-                                        <i class="bi ${invoice.status eq 'Delivered' ? 'bi-check-circle-fill' :
-                                                    invoice.status eq 'Canceled' ? 'bi-x-circle-fill' :
-                                                    'bi-clock-fill'}"></i>
-                                    ${invoice.status}
-                                </span>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Total:</strong> 
-                                    <span class="text-danger fw-bold">
-                                        ${invoice.totalAmount} VNĐ
+                                    <i class="bi ${invoice.status eq 'Delivered' ? 'bi-check-circle-fill' :
+                                                   invoice.status eq 'Canceled' ? 'bi-x-circle-fill' :
+                                                   'bi-clock-fill'}"></i>
+                                       ${invoice.status}
                                     </span>
-                                </p>
-                                <table class="table table-bordered align-middle table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Product ID</th>
-                                            <th>Product Name</th>
-                                            <th>Quantity</th>
-                                            <th>Price</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="item" items="${invoice.invoiceDetails}">
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Total:</strong> 
+                                        <span class="text-danger fw-bold">
+                                            ${invoice.totalAmount} VNĐ
+                                        </span>
+                                    </p>
+                                    <table class="table table-bordered align-middle table-hover">
+                                        <thead class="table-light">
                                             <tr>
-                                                <td>${item.product.productID}</td>
-                                                <td>${item.product.name}</td>
-                                                <td>${item.quantity}</td>
-                                                <td>${item.price}</td>
-                                                <td>${item.quantity * item.price}</td>
+                                                <th>Product ID</th>
+                                                <th>Product Name</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
+                                                <th>Total</th>
                                             </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                                <c:if test="${sessionScope.LOGIN_USER.roleID ne 'AD'}">
-                                    <c:if test="${invoice.status != 'Delivered' && invoice.status != 'Canceled'}">
-                                        <form action="MainController" method="POST" onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
-                                            <input type="hidden" name="invoiceID" value="${invoice.invoiceID}">
-                                            <button type="submit" name="action" value="CancelInvoice" class="btn btn-outline-danger btn-sm mt-2">
-                                                <i class="bi bi-trash3-fill"></i> Cancel Order
-                                            </button>
-                                        </form>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach var="item" items="${invoice.invoiceDetails}">
+                                                <tr>
+                                                    <td>${item.product.productID}</td>
+                                                    <td>${item.product.name}</td>
+                                                    <td>${item.quantity}</td>
+                                                    <td>${item.price}</td>
+                                                    <td>${item.quantity * item.price}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                    <c:if test="${sessionScope.LOGIN_USER.roleID ne 'AD'}">
+                                        <c:if test="${invoice.status != 'Delivered' && invoice.status != 'Canceled'}">
+                                            <form action="MainController" method="POST" onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
+                                                <input type="hidden" name="invoiceID" value="${invoice.invoiceID}">
+                                                <button type="submit" name="action" value="CancelInvoice" class="btn btn-outline-danger btn-sm mt-2">
+                                                    <i class="bi bi-trash3-fill"></i> Cancel Order
+                                                </button>
+                                            </form>
+                                        </c:if>
+                                        <c:if test="${invoice.status eq 'Delivered' && !invoice.returned}">
+                                            <form action="MainController" method="POST" class="mt-2">
+                                                <input type="hidden" name="action" value="ReturnRequest">
+                                                <input type="hidden" name="invoiceID" value="${invoice.invoiceID}">
+                                                <div class="mb-2">
+                                                    <textarea name="reason" class="form-control" name="reason" placeholder="Reason ..." required></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-outline-warning btn-sm">Request return</button>
+                                            </form>
+                                        </c:if>
                                     </c:if>
-                                    <c:if test="${invoice.status eq 'Delivered' && !invoice.returned}">
-                                        <form action="MainController" method="POST" class="mt-2">
-                                            <input type="hidden" name="action" value="ReturnRequest">
-                                            <input type="hidden" name="invoiceID" value="${invoice.invoiceID}">
-                                            <div class="mb-2">
-                                                <textarea name="reason" class="form-control" name="reason" placeholder="Reason ..." required></textarea>
-                                            </div>
-                                            <button type="submit" class="btn btn-outline-warning btn-sm">Request return</button>
-                                        </form>
-                                    </c:if>
-                                </c:if>
+                                </div>
                             </div>
-                        </div>
-                    </c:forEach>
+                        </c:forEach>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            window.addEventListener("DOMContentLoaded", () => {
-                const msg = document.getElementById("msg");
-                if (msg) {
-                    setTimeout(() => {
-                        msg.classList.remove("show");
-                        setTimeout(() => msg.remove(), 500);
-                    }, 3000);
-                }
-            });
-        </script>
-    </body>
-</html>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script>
+                                                window.addEventListener("DOMContentLoaded", () => {
+                                                    const msg = document.getElementById("msg");
+                                                    if (msg) {
+                                                        setTimeout(() => {
+                                                            msg.classList.remove("show");
+                                                            setTimeout(() => msg.remove(), 500);
+                                                        }, 3000);
+                                                    }
+                                                });
+            </script>
+        </body>
+    </html>

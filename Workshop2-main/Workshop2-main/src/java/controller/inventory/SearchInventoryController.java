@@ -42,6 +42,8 @@ public class SearchInventoryController extends HttpServlet {
             request.setAttribute("MSG", "Error loading inventory list: " + e.getMessage());
         }
         request.getRequestDispatcher("inventory/inventoryList.jsp").forward(request, response);
+   System.out.println("✅ SearchInventoryController called, forwarding to JSP");
+
     }
 
     @Override

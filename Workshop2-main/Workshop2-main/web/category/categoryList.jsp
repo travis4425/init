@@ -39,7 +39,7 @@
     </head>
     <body>
         <c:if test=" ${empty sessionScope.LOGIN_USER || 
-                      (sessionScope.LOGIN_USER.roleID ne 'AD' && 
+                       (sessionScope.LOGIN_USER.roleID ne 'AD' && 
                        sessionScope.LOGIN_USER.roleID ne 'SE' && 
                        sessionScope.LOGIN_USER.roleID ne 'MK' && 
                        sessionScope.LOGIN_USER.roleID ne 'BU')}">
@@ -56,47 +56,52 @@
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a href="MainController?action=ViewProducts">Product</a>
+                          <a href="MainController?action=ViewProducts">Product</a>
                     </c:if>
                     <!-- category -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'SE' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK'}">
-                        <a class="active" href="MainController?action=ViewCategories">Category</a>
+                          <a class="active" href="MainController?action=ViewCategories">Category</a>
                     </c:if>   
                     <!-- cart -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewCart">Cart</a>
+                          <a href="MainController?action=ViewCart">Cart</a>
                     </c:if>
                     <!-- invoice -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'AC'}">
-                        <a href="MainController?action=ViewInvoice">Invoice</a>
+                          <a href="MainController?action=ViewInvoice">Invoice</a>
                     </c:if>
                     <!-- delivery -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'DL'}">
-                        <a href="MainController?action=ViewDelivery">Delivery</a>   
+                          <a href="MainController?action=ViewDelivery">Delivery</a>   
                     </c:if>
                     <!-- return -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="MainController?action=ViewReturn">Return</a>  
+                          <a href="MainController?action=ViewReturn">Return</a>  
                     </c:if>
                     <!-- promotion -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'MK' ||
                                   sessionScope.LOGIN_USER.roleID eq 'BU'}">
-                        <a href="PromotionController">Promotion</a>
+                          <a href="PromotionController">Promotion</a>
                     </c:if>
                     <!-- customer care -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
                                   sessionScope.LOGIN_USER.roleID eq 'BU' || 
                                   sessionScope.LOGIN_USER.roleID eq 'CS'}">
-                        <a href="MainController?action=CustomerCare">Customer Care</a>
+                          <a href="MainController?action=CustomerCare">Customer Care</a>
+                    </c:if>
+                    <!-- inventory management -->      
+                    <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD' || 
+                                  sessionScope.LOGIN_USER.roleID eq 'CS'}">
+                          <a href="MainController?action=Inventory">Inventory Management</a>
                     </c:if>
                     <!-- user -->
                     <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
@@ -142,7 +147,7 @@
                             </button>
                         </div>
                     </c:if>
-                    
+
 
                     <!-- Create Form -->
                     <div class="collapse mb-4" id="createCategoryForm">
@@ -179,12 +184,12 @@
                                         <th>No</th>
                                         <th>Category</th>
                                         <th>Description</th>
-                                        <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
+                                            <c:if test="${sessionScope.LOGIN_USER.roleID eq 'AD'}">
                                             <th>Actions</th>
-                                        </c:if>
-                                        <c:if test="${sessionScope.LOGIN_USER.roleID eq 'MK'}">
+                                            </c:if>
+                                            <c:if test="${sessionScope.LOGIN_USER.roleID eq 'MK'}">
                                             <th>Promotion</th>
-                                        </c:if>
+                                            </c:if>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -212,7 +217,12 @@
                                                 <td>
                                                     <form action="MainController" method="POST" id="promoForm-${category.categoryID}">
                                                         <input type="hidden" name="categoryID" value="${category.categoryID}">
-                                                        <select class="form-select form-select-sm" name="promoID" onchange="if(this.value == '0') { if(confirm('Removing promotion will restore original prices. Continue?')) this.form.submit(); } else { this.form.submit(); }">
+                                                        <select class="form-select form-select-sm" name="promoID" onchange="if (this.value == '0') {
+                                                                    if (confirm('Removing promotion will restore original prices. Continue?'))
+                                                                        this.form.submit();
+                                                                } else {
+                                                                    this.form.submit();
+                                                                }">
                                                             <option value="0" ${category.promoID == 0 ? 'selected' : ''}>None</option>
                                                             <c:forEach var="promo" items="${requestScope.PROMOTION_LIST}">
                                                                 <option value="${promo.promoID}" ${category.promoID == promo.promoID ? 'selected' : ''}>
@@ -237,15 +247,15 @@
         <!-- Bootstrap JS -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            window.addEventListener("DOMContentLoaded", () => {
-                const msg = document.getElementById("msg");
-                if (msg) {
-                    setTimeout(() => {
-                        msg.classList.remove("show"); // mờ dần
-                        setTimeout(() => msg.remove(), 500); // xóa khỏi DOM
-                    }, 3000);
-                }
-            });
+                                                            window.addEventListener("DOMContentLoaded", () => {
+                                                                const msg = document.getElementById("msg");
+                                                                if (msg) {
+                                                                    setTimeout(() => {
+                                                                        msg.classList.remove("show"); // mờ dần
+                                                                        setTimeout(() => msg.remove(), 500); // xóa khỏi DOM
+                                                                    }, 3000);
+                                                                }
+                                                            });
         </script>
     </body>
 </html>
